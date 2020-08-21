@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "961230297089",
+    "firebase_url": "https://hiyahiyahiya-561aa.firebaseio.com",
+    "project_id": "hiyahiyahiya-561aa",
+    "storage_bucket": "hiyahiyahiya-561aa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961230297089:android:34ff2e99e5c390e63f4800",
+        "android_client_info": {
+          "package_name": "com.utsman.hiyahiyahiya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961230297089-ffqhkai1ff0q64obttit99iba163hcng.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.utsman.hiyahiyahiya",
+            "certificate_hash": "53fe68f931bd3f355545e6a479853e58e1277e78"
+          }
+        },
+        {
+          "client_id": "961230297089-08jqk0eejs520pjrpcbpvmft06eb4ne4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWSrdG5fP9FtY9unACmMs2NxUVf14pupY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961230297089-08jqk0eejs520pjrpcbpvmft06eb4ne4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
