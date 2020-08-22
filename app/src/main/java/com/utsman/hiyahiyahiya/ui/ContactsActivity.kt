@@ -9,6 +9,7 @@ import com.utsman.hiyahiyahiya.model.RowContact
 import com.utsman.hiyahiyahiya.model.chatRoom
 import com.utsman.hiyahiyahiya.ui.adapter.ContactAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.ContactViewModel
+import com.utsman.hiyahiyahiya.utils.generateIdRoom
 import com.utsman.hiyahiyahiya.utils.intentTo
 import com.utsman.hiyahiyahiya.utils.logi
 import com.utsman.hiyahiyahiya.viewmodel.AuthViewModel
@@ -38,9 +39,10 @@ class ContactsActivity : AppCompatActivity() {
         contactAdapter.onClick { contact ->
             authViewModel.requestUser()?.uid?.let { myId ->
                 val room = chatRoom {
-                    this.id = listOf(myId, contact.id).sorted().toString().replace("[", "")
-                        .replace("]", "").replace(", ", "").trim()
+                    this.id = generateIdRoom(myId, contact.id)
                     this.membersId = listOf(myId, contact.id)
+                    this.imageRoom = contact.photoUrl
+                    this.titleRoom = contact.name
                 }
 
                 intentTo(ChatRoomActivity::class.java) {

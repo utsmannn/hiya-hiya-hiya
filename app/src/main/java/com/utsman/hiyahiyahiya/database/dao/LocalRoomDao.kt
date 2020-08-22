@@ -10,7 +10,7 @@ interface LocalRoomDao {
     fun localRooms(): Flow<MutableList<LocalRoom>>
 
     @Query("select * from local_room where id = :id")
-    fun localRoom(id: String) : Flow<LocalRoom>
+    fun localRoom(id: String?) : LocalRoom?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(localRoom: LocalRoom)

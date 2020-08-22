@@ -10,7 +10,7 @@ interface LocalUserDao {
     fun localUsers(): Flow<MutableList<LocalUser>>
 
     @Query("select * from local_user where id = :id")
-    fun localUser(id: String) : LocalUser
+    fun localUser(id: String?) : LocalUser?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(localUser: LocalUser)

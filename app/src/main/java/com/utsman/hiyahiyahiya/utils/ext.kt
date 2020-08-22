@@ -9,3 +9,9 @@ fun Context.longToast(msg: String?) = Toast.makeText(this, msg, Toast.LENGTH_LON
 fun logi(msg: String?) = Log.i("HIYAHIYAHIYA", msg)
 
 fun generateId() = System.currentTimeMillis().toString().takeLast(5).toInt()
+fun generateIdRoom(vararg ids: String) = ids.toList().sorted().toString()
+    .replace("[", "")
+    .replace("]", "")
+    .replace(", ", "")
+    .trim()
+    .replace(" ", "")

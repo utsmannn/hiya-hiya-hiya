@@ -7,5 +7,5 @@ object UserPref {
     private val pref = HiyaHiyaHiyaApplication.contextinism().getSharedPreferences("user_saved", Context.MODE_PRIVATE)
 
     fun saveUserId(userId: String) = pref.edit().putString("user_id", userId).apply()
-    fun getUserId() = pref.getString("user_id", "")
+    fun getUserId() = pref.getString("user_id", "") ?: ""
 }

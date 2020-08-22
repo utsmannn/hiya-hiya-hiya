@@ -12,7 +12,10 @@ data class LocalRoom(
     var id: String = "ariel-tatum",
     var chatsId: List<String> = emptyList(),
     var membersId: List<String> = emptyList(),
-    var lastDate: Long = 0L
+    var lastDate: Long? = 0L,
+    var titleRoom: String? = "",
+    var subtitleRoom: String? = "",
+    var imageRoom: String? = ""
 ) {
     class Converter {
         val gson = Gson()

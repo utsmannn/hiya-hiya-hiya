@@ -5,20 +5,27 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.iid.FirebaseInstanceId
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
+import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.model.localUser
 import com.utsman.hiyahiyahiya.model.messageBody
 import com.utsman.hiyahiyahiya.network.TypeMessage
 import com.utsman.hiyahiyahiya.network.NetworkMessage
+import com.utsman.hiyahiyahiya.ui.adapter.ChatPagerAdapter
+import com.utsman.hiyahiyahiya.ui.fragment.RoomsFragment
 import com.utsman.hiyahiyahiya.utils.*
 import com.utsman.hiyahiyahiya.viewmodel.AuthViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModel()
+    private val localUserDb: LocalUserDatabase by inject()
     private val networkMessage: NetworkMessage by network()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +46,19 @@ class MainActivity : AppCompatActivity() {
         btn_contacts.click(MainScope()) {
             intentTo(ContactsActivity::class.java)
         }
+
+        setupFragment()
+    }
+
+    private fun setupFragment() {
+        val pagerAdapter = ChatPagerAdapter(supportFragmentManager)
+        val chatFragment = RoomsFragment()
+        pagerAdapter.addFragment(chatFragment)
+
+        vp_chat.adapter = pagerAdapter
     }
 
     private fun registerNotification() {
-
     }
 
     private fun registerTokenToAnotherDevice(tokenResult: String?) {
@@ -57,6 +73,10 @@ class MainActivity : AppCompatActivity() {
                 about = profileAbout
                 token = tokenResult
             }
+            GlobalScope.launch {
+                localUserDb.localUserDao().insert(localUser)
+            }
+
 
             val messageBody = messageBody {
                 fromMessage = localUser.id
@@ -71,7 +91,6 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailed(message: String?) {
                     toast("failed -> $message")
-                    tx_log.text = message
                 }
             })
         }

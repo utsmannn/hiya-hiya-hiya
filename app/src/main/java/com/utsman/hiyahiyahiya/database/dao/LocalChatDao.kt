@@ -13,7 +13,7 @@ interface LocalChatDao {
     fun localChatsRoom(roomId: String) : Flow<MutableList<LocalChat>>
 
     @Query("select * from local_chat where id = :id")
-    fun localChat(id: String) : Flow<LocalChat>
+    fun localChat(id: String?) : Flow<LocalChat?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(localChat: LocalChat)

@@ -9,6 +9,7 @@ import com.utsman.hiyahiyahiya.model.MessageBody
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -18,12 +19,13 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
 
     fun send(activity: AppCompatActivity, messageBody: MessageBody, messageCallback: MessageCallback) {
         CoroutineScope(Dispatchers.IO).launch {
-            val targetToken = localUserDb.localUserDao().localUser(messageBody.toMessage ?: "")
+            val targetUser = localUserDb.localUserDao().localUser(messageBody.toMessage ?: "")
+
             val rawBody = RawBody(
                 to = if (messageBody.typeMessage == TypeMessage.DEVICE_REGISTER) {
                     "/topics/${ConstantValue.topic}"
                 } else {
-                    targetToken.token
+                    targetUser?.token
                 },
                 data = messageBody
             )
