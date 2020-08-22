@@ -9,7 +9,7 @@ import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.model.localUser
 import com.utsman.hiyahiyahiya.model.messageBody
-import com.utsman.hiyahiyahiya.network.TypeMessage
+import com.utsman.hiyahiyahiya.model.TypeMessage
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.ui.adapter.ChatPagerAdapter
 import com.utsman.hiyahiyahiya.ui.fragment.RoomsFragment
@@ -47,7 +47,17 @@ class MainActivity : AppCompatActivity() {
             intentTo(ContactsActivity::class.java)
         }
 
+        setupToolbar()
         setupFragment()
+    }
+
+    private fun setupToolbar() {
+        toolbar_main.inflateMenu(R.menu.main_menu)
+        val logoutMenu = toolbar_main.menu.findItem(R.id.action_logout)
+        logoutMenu.setOnMenuItemClickListener {
+            toast("logout")
+            true
+        }
     }
 
     private fun setupFragment() {
@@ -64,7 +74,10 @@ class MainActivity : AppCompatActivity() {
     private fun registerTokenToAnotherDevice(tokenResult: String?) {
         authViewModel.requestUser()?.run {
             val profileAbout = "This about profile of $displayName"
-            UserPref.saveUserId(uid)
+            UserPref.run {
+                saveUserId(uid)
+                saveUsername(displayName)
+            }
 
             val localUser = localUser {
                 id = uid

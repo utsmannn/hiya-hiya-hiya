@@ -12,11 +12,11 @@ import com.utsman.hiyahiyahiya.database.entity.LocalUser
 import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.model.*
 import com.utsman.hiyahiyahiya.network.NetworkMessage
-import com.utsman.hiyahiyahiya.network.TypeMessage
+import com.utsman.hiyahiyahiya.model.TypeMessage
+import com.utsman.hiyahiyahiya.utils.Broadcast
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -61,6 +61,7 @@ class FcmServices : FirebaseMessagingService() {
                             this.titleRoom = payloadChat.currentUser?.name
                             this.imageRoom = payloadChat?.currentUser?.photoUri
                             this.lastDate = payloadChat.time
+                            this.localChatStatus = LocalChatStatus.NONE
                         }
                         delay(300)
                         localRoomDb.localRoomDao().update(roomFound)
@@ -73,6 +74,7 @@ class FcmServices : FirebaseMessagingService() {
                             this.membersId = listOf(meId, otherId)
                             this.chatsId = listOf(payloadChat.id)
                             this.imageRoom = payloadChat.currentUser?.photoUri
+                            this.localChatStatus = LocalChatStatus.NONE
                         }
 
                         localRoomDb.localRoomDao().insert(newRoom.toLocalRoom())
@@ -81,6 +83,7 @@ class FcmServices : FirebaseMessagingService() {
                     val messageStatusBody = messageStatusBody {
                         this.chatId = payloadChat.id
                         this.localStatus = LocalChatStatus.RECEIVED
+                        this.ownerId = UserPref.getUserId()
                     }
 
                     val messageBody = messageBody {
@@ -107,8 +110,19 @@ class FcmServices : FirebaseMessagingService() {
                     chatFound.localChatStatus = payloadStatus.localStatus
                     GlobalScope.launch {
                         localChatDb.localChatDao().update(chatFound)
+
+                        val roomFound = localRoomDb.localRoomDao().localRoom(chatFound.roomId)
+                        if (roomFound != null) {
+                            roomFound.localChatStatus = payloadStatus.localStatus
+                            localRoomDb.localRoomDao().update(roomFound)
+                        }
                     }
                 }
+            }
+            TypeMessage.TYPING -> {
+                val payloadTyping = gson.fromJson(payloadString, TypingBody::class.java)
+                val broadcastKey = "typing_${payloadTyping.roomId}"
+                Broadcast.with(GlobalScope).post(broadcastKey)
             }
         }
 
@@ -118,5 +132,28 @@ class FcmServices : FirebaseMessagingService() {
 
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
+        val user = localUserDb.localUserDao().localUser(UserPref.getUserId())
+        user?.token = newToken
+        GlobalScope.launch {
+            user?.let {  u ->
+                localUserDb.localUserDao().update(u)
+                val messageBody = messageBody {
+                    fromMessage = u.id
+                    typeMessage = TypeMessage.DEVICE_REGISTER
+                    payload = u
+                }
+
+                network.send(messageBody, object : NetworkMessage.MessageCallback {
+                    override fun onSuccess() {
+                        logi("broadcast new token")
+                    }
+
+                    override fun onFailed(message: String?) {
+                        logi("broadcast new token failed -> $message")
+                    }
+
+                })
+            }
+        }
     }
 }

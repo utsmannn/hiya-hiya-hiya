@@ -5,15 +5,20 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 private fun View.clicks(): Flow<Unit> = callbackFlow {
     this@clicks.setOnClickListener {
@@ -73,5 +78,29 @@ fun Fragment.intentTo(
         }
     } else {
         startActivity(intent)
+    }
+}
+
+fun EditText.debounce(delay: Long, subscribe: (String) -> Unit) {
+    var resultFor = ""
+
+    addTextChangedListener {
+        doOnTextChanged { text, _, _, _ ->
+            if ((text?.length ?: 0) >= 1) {
+                val resultText = text.toString().trim()
+                if (resultText == resultFor)
+                    return@doOnTextChanged
+
+                resultFor = resultText
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    kotlinx.coroutines.delay(delay)
+                    if (resultText != resultFor)
+                        return@launch
+
+                    subscribe.invoke(resultFor)
+                }
+            }
+        }
     }
 }

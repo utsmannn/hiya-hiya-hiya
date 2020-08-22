@@ -3,11 +3,15 @@ package com.utsman.hiyahiyahiya.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.hiyahiyahiya.R
+import com.utsman.hiyahiyahiya.data.UserPref
+import com.utsman.hiyahiyahiya.model.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.RowRoom
 import com.utsman.hiyahiyahiya.model.RowRoomType
+import com.utsman.hiyahiyahiya.model.toLocalRoom
 import com.utsman.hiyahiyahiya.utils.click
 import com.utsman.hiyahiyahiya.utils.load
 import kotlinx.android.synthetic.main.item_list_empty.view.*
@@ -20,6 +24,18 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             img_profile.load(item.imageRoom, isCircle = true)
             tx_title.text = item.titleRoom
             tx_subtitle.text = item.subtitleRoom
+
+            when (item.localChatStatus) {
+                LocalChatStatus.NONE -> img_send_indicator.visibility = View.GONE
+                LocalChatStatus.SEND -> {
+                    img_send_indicator.visibility = View.VISIBLE
+                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_done_24))
+                }
+                LocalChatStatus.RECEIVED -> {
+                    img_send_indicator.visibility = View.VISIBLE
+                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
+                }
+            }
 
             click {
                 onRoomClick?.invoke(item)

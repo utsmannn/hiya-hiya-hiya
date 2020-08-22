@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:padding="6dp">
@@ -26,12 +27,39 @@
         app:layout_constraintStart_toEndOf="@+id/img_profile"
         app:layout_constraintTop_toTopOf="@+id/img_profile" />
 
-    <TextView
-        android:id="@+id/tx_subtitle"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:orientation="horizontal"
+        android:paddingEnd="12dp"
+        android:paddingRight="12dp"
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="@+id/tx_title"
-        app:layout_constraintTop_toBottomOf="@+id/tx_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tx_title"
+        tools:ignore="RtlSymmetry">
+
+        <ImageView
+            android:id="@+id/img_send_indicator"
+            android:layout_width="15dp"
+            android:alpha="0.6"
+            android:layout_height="15dp"
+            android:visibility="gone"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
+            android:src="@drawable/ic_round_done_24"
+            app:tint="@android:color/black" />
+
+        <TextView
+            android:id="@+id/tx_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:alpha="0.6"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:text="@string/app_name" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,10 +22,15 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             tx_status_me.text = itemChatItem.time.toString()
 
             when (itemChatItem.localChatStatus) {
-                LocalChatStatus.SEND ->
+                LocalChatStatus.NONE -> img_send_indicator.visibility = View.GONE
+                LocalChatStatus.SEND -> {
+                    img_send_indicator.visibility = View.VISIBLE
                     img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_done_24))
-                LocalChatStatus.RECEIVED ->
+                }
+                LocalChatStatus.RECEIVED -> {
+                    img_send_indicator.visibility = View.VISIBLE
                     img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
+                }
             }
         }
     }

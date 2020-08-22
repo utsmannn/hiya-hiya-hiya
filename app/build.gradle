@@ -68,7 +68,6 @@ dependencies {
     implementation 'org.koin:koin-androidx-viewmodel:2.1.5'
 
     implementation 'com.afollestad.inline-activity-result:core:0.2.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

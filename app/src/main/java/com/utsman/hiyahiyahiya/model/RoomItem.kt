@@ -1,6 +1,7 @@
 package com.utsman.hiyahiyahiya.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 enum class RowRoomType {
@@ -16,7 +17,9 @@ sealed class RowRoom(val rowRoomType: RowRoomType) {
         var lastDate: Long? = 0L,
         var titleRoom: String? = "",
         var subtitleRoom: String? = "",
-        var imageRoom: String? = ""
+        var imageRoom: String? = "",
+        @SerializedName("local_chat_status")
+        var localChatStatus: LocalChatStatus = LocalChatStatus.NONE
     ): Parcelable, RowRoom(RowRoomType.ITEM)
 
     data class Empty(

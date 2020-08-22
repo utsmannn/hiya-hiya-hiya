@@ -8,4 +8,7 @@ object UserPref {
 
     fun saveUserId(userId: String) = pref.edit().putString("user_id", userId).apply()
     fun getUserId() = pref.getString("user_id", "") ?: ""
+
+    fun saveUsername(username: String?) = pref.edit().putString("user_name", username).apply()
+    fun getUsername() = pref.getString("user_name", "") ?: ""
 }
