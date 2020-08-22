@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 29
@@ -63,17 +64,21 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
-    implementation 'org.koin:koin-android:2.1.5'
     implementation 'org.koin:koin-androidx-scope:2.1.5'
-    implementation 'org.koin:koin-android-viewmodel:2.1.5'
+    implementation 'org.koin:koin-androidx-viewmodel:2.1.5'
 
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    implementation 'jp.wasabeef:glide-transformations:4.1.0'
     implementation 'com.afollestad.inline-activity-result:core:0.2.0'
     implementation 'org.jsoup:jsoup:1.13.1'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.2'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
+
+    implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'androidx.room:room-ktx:2.2.5'
+    kapt 'androidx.room:room-compiler:2.2.5'
 }

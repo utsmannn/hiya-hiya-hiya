@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Hiya hiya hiya</string>
     <string name="type_message">Type message...</string>
+    <string name="lorem_ipsum">lorem ipsum dolor si amet</string>
 </resources>

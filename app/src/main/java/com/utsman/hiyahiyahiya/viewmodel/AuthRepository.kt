@@ -15,19 +15,22 @@ import com.google.firebase.ktx.Firebase
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.utils.logi
 
-class AuthRepository(private val context: Context) {
-    lateinit var googleSignInClient: GoogleSignInClient
-    lateinit var firebaseAuth: FirebaseAuth
+class AuthRepository(context: Context) {
+    var googleSignInClient: GoogleSignInClient
+    var firebaseAuth: FirebaseAuth
 
-    private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build()
+    init {
+        logi("init gso ----------->")
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
 
-    fun initAuth(): FirebaseUser? {
         googleSignInClient = GoogleSignIn.getClient(context, gso)
         firebaseAuth = Firebase.auth
+    }
 
+    fun requestUser(): FirebaseUser? {
         return firebaseAuth.currentUser
     }
 

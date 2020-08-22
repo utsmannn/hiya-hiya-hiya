@@ -9,17 +9,19 @@ import com.google.firebase.auth.FirebaseUser
 import com.utsman.hiyahiyahiya.viewmodel.AuthViewModel
 import com.utsman.hiyahiyahiya.R
 import kotlinx.android.synthetic.main.activity_auth.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthActivity : AppCompatActivity() {
 
     private val viewModel: AuthViewModel by viewModel()
+    private val viewModel2: AuthViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
-        val user = viewModel.initGoogleAuth()
+        val user = viewModel.requestUser()
         updateUi(user, null)
 
         btn_login.setOnClickListener {

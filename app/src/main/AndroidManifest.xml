@@ -21,6 +21,16 @@
             </intent-filter>
         </service>
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_android_black_24dp" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="2020" />
+
         <activity android:name=".ui.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +39,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.MainActivity"/>
+        <activity android:name=".ui.ContactsActivity"/>
+        <activity android:name=".ui.ChatRoomActivity"/>
     </application>
 
 </manifest>
