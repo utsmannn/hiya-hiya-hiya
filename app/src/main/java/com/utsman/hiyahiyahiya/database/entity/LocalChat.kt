@@ -22,7 +22,8 @@ data class LocalChat(
     var attachment: List<MessageAttachment> = emptyList(),
     @SerializedName("current_user")
     var currentUser: LocalUser?,
-    var localChatStatus: LocalChatStatus
+    @SerializedName("local_chat_status")
+    var localChatStatus: LocalChatStatus = LocalChatStatus.SEND
 ) {
 
     class Converter {
@@ -48,6 +49,16 @@ data class LocalChat(
         fun toUser(value: String?): LocalUser? {
             return gson.fromJson(value, object : TypeToken<LocalUser?>() {
             }.type)
+        }
+
+        @TypeConverter
+        fun fromLocalStatus(value: LocalChatStatus): String {
+            return value.name
+        }
+
+        @TypeConverter
+        fun toLocalStatus(value: String): LocalChatStatus {
+            return LocalChatStatus.valueOf(value)
         }
     }
 }

@@ -20,6 +20,7 @@ sealed class RowChatItem(var rowChatType: RowChatType) {
         var attachment: List<MessageAttachment> = emptyList(),
         @SerializedName("current_user")
         var currentUser: LocalUser? = LocalUser(),
+        @SerializedName("local_chat_status")
         var localChatStatus: LocalChatStatus = LocalChatStatus.SEND
     ): RowChatItem(if (from == UserPref.getUserId()) RowChatType.ME else RowChatType.OTHER)
 

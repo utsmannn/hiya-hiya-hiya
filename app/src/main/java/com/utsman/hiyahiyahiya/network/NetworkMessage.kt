@@ -52,6 +52,37 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
         }
     }
 
+    fun send(messageBody: MessageBody, messageCallback: MessageCallback) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val targetUser = localUserDb.localUserDao().localUser(messageBody.toMessage ?: "")
+
+            val rawBody = RawBody(
+                to = if (messageBody.typeMessage == TypeMessage.DEVICE_REGISTER) {
+                    "/topics/${ConstantValue.topic}"
+                } else {
+                    targetUser?.token
+                },
+                data = messageBody
+            )
+
+            val gson = Gson()
+            val json = gson.toJson(rawBody)
+            logi("raw body is -> $json")
+
+            try {
+                val response = networkInstance.sendMessage(rawBody)
+                if (response.success == 1) {
+                    messageCallback.onSuccess()
+                }
+                if (response.failure == 1) {
+                    messageCallback.onFailed(null)
+                }
+            } catch (e: Throwable) {
+                messageCallback.onFailed(e.localizedMessage)
+            }
+        }
+    }
+
     data class RawBody(
         val to: String?,
         val data: MessageBody

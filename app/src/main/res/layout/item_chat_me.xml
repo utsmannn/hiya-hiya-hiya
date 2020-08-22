@@ -52,11 +52,11 @@
                 tools:text="@string/lorem_ipsum" />
 
             <ImageView
+                android:id="@+id/img_send_indicator"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"
-                android:id="@+id/img_send_indicator"
                 android:src="@drawable/ic_baseline_done_all_24" />
 
         </LinearLayout>

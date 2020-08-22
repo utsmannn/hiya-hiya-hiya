@@ -3,9 +3,11 @@ package com.utsman.hiyahiyahiya.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.hiyahiyahiya.R
+import com.utsman.hiyahiyahiya.model.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.RowChatItem
 import com.utsman.hiyahiyahiya.model.RowChatType
 import kotlinx.android.synthetic.main.item_chat_me.view.*
@@ -18,6 +20,13 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
             tx_message_me.text = itemChatItem.message
             tx_status_me.text = itemChatItem.time.toString()
+
+            when (itemChatItem.localChatStatus) {
+                LocalChatStatus.SEND ->
+                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_done_24))
+                LocalChatStatus.RECEIVED ->
+                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
+            }
         }
     }
 

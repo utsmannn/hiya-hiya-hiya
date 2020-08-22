@@ -9,9 +9,9 @@ import com.utsman.hiyahiyahiya.database.LocalRoomDatabase
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
-import com.utsman.hiyahiyahiya.model.chatRoom
-import com.utsman.hiyahiyahiya.model.localUser
-import com.utsman.hiyahiyahiya.model.toLocalRoom
+import com.utsman.hiyahiyahiya.di.network
+import com.utsman.hiyahiyahiya.model.*
+import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.network.TypeMessage
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.GlobalScope
@@ -26,22 +26,23 @@ class FcmServices : FirebaseMessagingService() {
     private val localUserDb: LocalUserDatabase by inject()
     private val localChatDb: LocalChatDatabase by inject()
     private val localRoomDb: LocalRoomDatabase by inject()
+    private val network: NetworkMessage by network()
 
     override fun onMessageReceived(remote: RemoteMessage) {
         super.onMessageReceived(remote)
         logi("message from arrived -> ${remote.from}")
         logi("message arrived -> ${remote.data}")
 
-        val type = remote.data["type_message"]
+        val type = remote.data["type_message"] ?: TypeMessage.DEVICE_REGISTER.name
         val payloadString = remote.data["payload"]
-        when (type) {
-            TypeMessage.DEVICE_REGISTER.name -> {
+        when (TypeMessage.valueOf(type)) {
+            TypeMessage.DEVICE_REGISTER -> {
                 val payloadUser = gson.fromJson(payloadString, LocalUser::class.java)
                 GlobalScope.launch {
                     localUserDb.localUserDao().insert(payloadUser)
                 }
             }
-            TypeMessage.MESSAGE.name -> {
+            TypeMessage.MESSAGE -> {
                 val payloadChat = gson.fromJson(payloadString, LocalChat::class.java)
                 GlobalScope.launch {
                     localChatDb.localChatDao().insert(payloadChat)
@@ -75,6 +76,37 @@ class FcmServices : FirebaseMessagingService() {
                         }
 
                         localRoomDb.localRoomDao().insert(newRoom.toLocalRoom())
+                    }
+
+                    val messageStatusBody = messageStatusBody {
+                        this.chatId = payloadChat.id
+                        this.localStatus = LocalChatStatus.RECEIVED
+                    }
+
+                    val messageBody = messageBody {
+                        this.fromMessage = UserPref.getUserId()
+                        this.toMessage = otherId
+                        this.typeMessage = TypeMessage.LOCAL_STATUS
+                        this.payload = messageStatusBody
+                    }
+
+                    network.send(messageBody, object : NetworkMessage.MessageCallback {
+                        override fun onSuccess() {
+                        }
+
+                        override fun onFailed(message: String?) {
+                        }
+
+                    })
+                }
+            }
+            TypeMessage.LOCAL_STATUS -> {
+                val payloadStatus = gson.fromJson(payloadString, MessageStatusBody::class.java)
+                val chatFound = localChatDb.localChatDao().localChat(payloadStatus.chatId)
+                if (chatFound != null) {
+                    chatFound.localChatStatus = payloadStatus.localStatus
+                    GlobalScope.launch {
+                        localChatDb.localChatDao().update(chatFound)
                     }
                 }
             }
