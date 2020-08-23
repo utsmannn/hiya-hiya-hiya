@@ -3,6 +3,7 @@ package com.utsman.hiyahiyahiya.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import com.utsman.hiyahiyahiya.ui.adapter.ChatAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.ChatViewModel
 import com.utsman.hiyahiyahiya.ui.viewmodel.RoomViewModel
 import com.utsman.hiyahiyahiya.utils.*
+import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.activity_chat_room.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -111,6 +113,14 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             }
         })
 
+        setupInputText(roomItem, to)
+
+        btn_send_message.click(lifecycleScope) {
+            sendMessage(roomItem, to)
+        }
+    }
+
+    private fun setupInputText(roomItem: RowRoom.RoomItem, to: String?) {
         in_chat_message.debounce(700) {
             val typingBody = typingBody {
                 this.ownerId = UserPref.getUserId()
@@ -135,48 +145,68 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             }
         }
 
-        btn_send_message.click(lifecycleScope) {
-            val messageString = in_chat_message.text.toString()
 
-            roomItem.subtitleRoom = messageString
-            roomItem.localChatStatus = LocalChatStatus.SEND
+        // final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(emojiEditText);
+        //emojiPopup.toggle(); // Toggles visibility of the Popup.
+        //emojiPopup.dismiss(); // Dismisses the Popup.
+        //emojiPopup.isShowing();
 
-            GlobalScope.launch {
-                val currentUser = localUserDb.localUserDao().localUser(UserPref.getUserId())
+        val emojiPopup = EmojiPopup.Builder
+            .fromRootView(parent_layout)
+            .build(in_chat_message)
 
-                val chat = chatItem {
-                    this.id = UUID.randomUUID().toString()
-                    this.from = UserPref.getUserId()
-                    this.message = messageString
-                    this.roomId = roomItem.id
-                    this.time = System.currentTimeMillis()
-                    this.to = to
-                    this.currentUser = currentUser
+        btn_emoticon.click {
+            if (emojiPopup.isShowing) {
+                emojiPopup.dismiss()
+                btn_emoticon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_round_insert_emoticon_24))
+            } else {
+                emojiPopup.toggle()
+                btn_emoticon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_keyboard_24))
+            }
+        }
+    }
+
+    private fun sendMessage(roomItem: RowRoom.RoomItem, to: String?) {
+        val messageString = in_chat_message.text.toString()
+
+        roomItem.subtitleRoom = messageString
+        roomItem.localChatStatus = LocalChatStatus.SEND
+
+        GlobalScope.launch {
+            val currentUser = localUserDb.localUserDao().localUser(UserPref.getUserId())
+
+            val chat = chatItem {
+                this.id = UUID.randomUUID().toString()
+                this.from = UserPref.getUserId()
+                this.message = messageString
+                this.roomId = roomItem.id
+                this.time = System.currentTimeMillis()
+                this.to = to
+                this.currentUser = currentUser
+            }
+
+            chatRoomViewModel.insert(chat.toLocalChat())
+            roomViewModel.insert(roomItem.toLocalRoom())
+
+            val messageBody = messageBody {
+                this.fromMessage = chat.from
+                this.toMessage = chat.to
+                this.typeMessage = TypeMessage.MESSAGE
+                this.payload = chat.toLocalChat()
+            }
+
+            network.send(messageBody, object : NetworkMessage.MessageCallback {
+                override fun onSuccess() {
+                    logi("success")
                 }
 
-                chatRoomViewModel.insert(chat.toLocalChat())
-                roomViewModel.insert(roomItem.toLocalRoom())
-
-                val messageBody = messageBody {
-                    this.fromMessage = chat.from
-                    this.toMessage = chat.to
-                    this.typeMessage = TypeMessage.MESSAGE
-                    this.payload = chat.toLocalChat()
+                override fun onFailed(message: String?) {
+                    logi("failed ------> $message")
                 }
+            })
 
-                network.send(messageBody, object : NetworkMessage.MessageCallback {
-                        override fun onSuccess() {
-                            logi("success")
-                        }
-
-                        override fun onFailed(message: String?) {
-                            logi("failed ------> $message")
-                        }
-                    })
-
-                runOnUiThread {
-                    in_chat_message.setText("")
-                }
+            runOnUiThread {
+                in_chat_message.setText("")
             }
         }
     }

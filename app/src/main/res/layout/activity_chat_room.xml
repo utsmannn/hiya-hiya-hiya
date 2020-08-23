@@ -2,9 +2,9 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/parent_layout">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -55,8 +55,8 @@
         android:id="@+id/rv_chat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="66dp"
         android:clipToPadding="false"
-        android:layout_marginBottom="60dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <LinearLayout
@@ -64,49 +64,87 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="6dp"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/btn_attach"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_attach_file_24px"
-            tools:ignore="NewApi" />
-
-        <EditText
-            android:id="@+id/in_chat_message"
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="12dp"
+            android:layout_height="46dp"
+            android:layout_margin="6dp"
             android:layout_weight="1"
-            android:background="@drawable/img_bubble_input"
-            android:hint="@string/type_message"
-            android:paddingStart="12dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="8dp"
-            android:textSize="13sp" />
+            app:cardCornerRadius="26dp"
+            app:cardElevation="1dp">
 
-        <ImageView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/btn_emoticon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="12dp"
+                    android:alpha="0.6"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_round_insert_emoticon_24"
+                    app:tint="@android:color/black"
+                    tools:ignore="NewApi" />
+
+                <com.vanniktech.emoji.EmojiEditText
+                    android:id="@+id/in_chat_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/type_message"
+                    android:imeOptions="actionSend"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:id="@+id/btn_attach"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="6dp"
+                    android:alpha="0.6"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:rotation="130"
+                    android:src="@drawable/ic_attach_file_24px"
+                    app:tint="@android:color/black"
+                    tools:ignore="NewApi" />
+
+                <ImageView
+                    android:id="@+id/btn_photo"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginRight="12dp"
+                    android:alpha="0.6"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_round_photo_camera_24"
+                    app:tint="@android:color/black"
+                    tools:ignore="NewApi" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_send_message"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginRight="12dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_send_24px"
-            app:tint="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
+            app:elevation="1dp"
+            app:fabCustomSize="46dp"
+            app:tint="@android:color/white"
             tools:ignore="NewApi" />
 
     </LinearLayout>
