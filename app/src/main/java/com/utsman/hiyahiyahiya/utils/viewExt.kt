@@ -5,12 +5,14 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
+import com.utsman.hiyahiyahiya.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -103,4 +105,24 @@ fun EditText.debounce(delay: Long, subscribe: (String) -> Unit) {
             }
         }
     }
+}
+
+fun KeyboardVisibilityListener.setKeyboardVisibilityListener(parent: View) {
+    parent.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        private var mPreviousHeight = 0
+        override fun onGlobalLayout() {
+            val newHeight = parent.height
+            if (mPreviousHeight != 0) {
+                when {
+                    mPreviousHeight > newHeight -> {
+                        onKeyboardVisibilityChanged(true)
+                    }
+                    mPreviousHeight < newHeight -> {
+                        onKeyboardVisibilityChanged(false)
+                    }
+                }
+            }
+            mPreviousHeight = newHeight
+        }
+    })
 }

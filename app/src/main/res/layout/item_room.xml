@@ -33,6 +33,7 @@
         android:orientation="horizontal"
         android:paddingEnd="12dp"
         android:paddingRight="12dp"
+        android:alpha="0.7"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="@+id/tx_title"
         app:layout_constraintTop_toBottomOf="@+id/tx_title"

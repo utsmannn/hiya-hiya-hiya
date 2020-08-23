@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
@@ -25,16 +26,20 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-class ChatRoomActivity : AppCompatActivity() {
+class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
     private val chatAdapter: ChatAdapter by inject()
     private val localUserDb: LocalUserDatabase by inject()
     private val chatRoomViewModel: ChatViewModel by viewModel()
     private val roomViewModel: RoomViewModel by viewModel()
     private val network: NetworkMessage by network()
 
+    private var isReachBottom = true
+    private var chatSize = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_room)
+        setKeyboardVisibilityListener(parent_layout)
 
         val room = intent.getParcelableExtra<RowRoom.RoomItem>("room")
         registerBroadcast(room)
@@ -78,7 +83,7 @@ class ChatRoomActivity : AppCompatActivity() {
                     runOnUiThread {
                         setupToolbar(roomItem, "Typing...")
                     }
-                    delay(1000)
+                    delay(3000)
                     runOnUiThread {
                         setupToolbar(roomItem)
                     }
@@ -95,8 +100,15 @@ class ChatRoomActivity : AppCompatActivity() {
         }
 
         chatRoomViewModel.chats(roomId = roomItem.id).observe(this, Observer {
-            if (it.isEmpty()) chatAdapter.addChat(listOf(RowChatItem.Empty("chat is empty")))
-            else chatAdapter.addChat(it)
+            if (it.isEmpty()) {
+                chatAdapter.addChat(listOf(RowChatItem.Empty("chat is empty")))
+            } else {
+                chatSize = it.size
+                chatAdapter.addChat(it)
+                rv_chat.scrollToPosition(it.lastIndex)
+                setupRecyclerViewScrollListener(linearLayoutManager, it.lastIndex)
+                isReachBottom = true
+            }
         })
 
         in_chat_message.debounce(700) {
@@ -152,24 +164,36 @@ class ChatRoomActivity : AppCompatActivity() {
                     this.payload = chat.toLocalChat()
                 }
 
-                network.send(this@ChatRoomActivity, messageBody, object : NetworkMessage.MessageCallback {
+                network.send(messageBody, object : NetworkMessage.MessageCallback {
                         override fun onSuccess() {
-                            toast("success send")
+                            logi("success")
                         }
 
                         override fun onFailed(message: String?) {
-                            longToast("failed")
                             logi("failed ------> $message")
                         }
                     })
 
                 runOnUiThread {
-                    logi("try sending ----> $messageBody")
-                    toast(currentUser?.name)
                     in_chat_message.setText("")
                 }
-
             }
+        }
+    }
+
+    private fun setupRecyclerViewScrollListener(layoutManager: LinearLayoutManager, lastIndexList: Int) {
+        rv_chat.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val itemLastPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+                isReachBottom = itemLastPosition == lastIndexList
+            }
+        })
+    }
+
+    override fun onKeyboardVisibilityChanged(keyboardVisible: Boolean) {
+        if (chatSize > 1) {
+            if (isReachBottom) rv_chat.scrollToPosition(chatSize-1)
         }
     }
 }

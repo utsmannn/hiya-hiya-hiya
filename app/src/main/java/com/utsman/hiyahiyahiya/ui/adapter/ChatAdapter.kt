@@ -19,7 +19,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ItemChatMeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
             tx_message_me.text = itemChatItem.message
-            tx_status_me.text = itemChatItem.time.toString()
+            tx_status_me.text = itemChatItem.stringTime()
 
             when (itemChatItem.localChatStatus) {
                 LocalChatStatus.NONE -> img_send_indicator.visibility = View.GONE
@@ -38,7 +38,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ItemChatOtherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
             tx_message_other.text = itemChatItem.message
-            tx_status_other.text = itemChatItem.time.toString()
+            tx_status_other.text = itemChatItem.stringTime()
         }
     }
 

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.utsman.hiyahiyahiya">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".HiyaHiyaHiyaApplication"
@@ -38,9 +38,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity"/>
-        <activity android:name=".ui.ContactsActivity"/>
-        <activity android:name=".ui.ChatRoomActivity"/>
+        <activity
+            android:name=".ui.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.ContactsActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.ChatRoomActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
