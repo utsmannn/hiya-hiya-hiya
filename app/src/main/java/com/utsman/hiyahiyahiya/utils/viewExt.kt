@@ -2,10 +2,14 @@ package com.utsman.hiyahiyahiya.utils
 
 import android.app.Activity
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.widget.addTextChangedListener
@@ -85,7 +89,6 @@ fun Fragment.intentTo(
 
 fun EditText.debounce(delay: Long, subscribe: (String) -> Unit) {
     var resultFor = ""
-
     addTextChangedListener {
         doOnTextChanged { text, _, _, _ ->
             if ((text?.length ?: 0) >= 1) {
@@ -125,4 +128,34 @@ fun KeyboardVisibilityListener.setKeyboardVisibilityListener(parent: View) {
             mPreviousHeight = newHeight
         }
     })
+}
+
+private fun Context.getStatusBarHeight(): Int {
+    var statusBarHeight = 0
+    val resourceId: Int = resources.getIdentifier("status_bar_height", "dimen", "android")
+    if (resourceId > 0) {
+        statusBarHeight = resources.getDimensionPixelSize(resourceId)
+    }
+    return statusBarHeight
+}
+
+
+fun Activity.makeStatusBarTransparent(pushPadding: Boolean = true) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        window.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            decorView.setBackgroundColor(Color.WHITE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or 0
+                if (pushPadding) {
+                    val parentView = findViewById<ViewGroup>(android.R.id.content)
+                    parentView.setPadding(0, context.getStatusBarHeight(), 0, 0)
+                }
+            } else {
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            }
+            statusBarColor = Color.TRANSPARENT
+        }
+    }
 }

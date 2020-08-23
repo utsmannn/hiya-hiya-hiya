@@ -1,5 +1,6 @@
 package com.utsman.hiyahiyahiya.ui
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -116,7 +117,22 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
         setupInputText(roomItem, to)
 
         btn_send_message.click(lifecycleScope) {
-            sendMessage(roomItem, to)
+            if (in_chat_message.text?.isEmpty() == false) {
+                sendMessage(roomItem, to)
+            }
+        }
+
+        btn_photo.click {
+            val listPermission = listOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+            )
+            withPermissions(listPermission) { _, deniedList ->
+                if (deniedList.isEmpty()) {
+                    intentTo(PhotosActivity::class.java)
+                }
+            }
         }
     }
 
@@ -144,12 +160,6 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                 })
             }
         }
-
-
-        // final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(emojiEditText);
-        //emojiPopup.toggle(); // Toggles visibility of the Popup.
-        //emojiPopup.dismiss(); // Dismisses the Popup.
-        //emojiPopup.isShowing();
 
         val emojiPopup = EmojiPopup.Builder
             .fromRootView(parent_layout)

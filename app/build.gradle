@@ -70,6 +70,7 @@ dependencies {
     implementation 'com.afollestad.inline-activity-result:core:0.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.vanniktech:emoji-google:0.7.0'
+    implementation 'com.karumi:dexter:6.0.2'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'

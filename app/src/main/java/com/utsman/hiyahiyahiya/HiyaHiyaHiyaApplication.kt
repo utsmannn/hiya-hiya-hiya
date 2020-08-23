@@ -22,7 +22,6 @@ class HiyaHiyaHiyaApplication : Application() {
         return super.getApplicationContext()
     }
 
-
     override fun onCreate() {
         super.onCreate()
         FirebaseMessaging.getInstance().subscribeToTopic(ConstantValue.topic)
@@ -36,7 +35,8 @@ class HiyaHiyaHiyaApplication : Application() {
                 contactModule,
                 adapterModule,
                 roomModule,
-                chatModule
+                chatModule,
+                photos
             )
         }
     }

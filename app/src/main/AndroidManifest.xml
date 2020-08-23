@@ -3,6 +3,9 @@
     package="com.utsman.hiyahiyahiya">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".HiyaHiyaHiyaApplication"
@@ -47,6 +50,10 @@
         <activity
             android:name=".ui.ChatRoomActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.PhotosActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.ImageResultActivity" />
     </application>
 
 </manifest>

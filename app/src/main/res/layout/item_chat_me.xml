@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:autoLink="all"
+            android:layout_marginTop="6dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textColor="#fff"

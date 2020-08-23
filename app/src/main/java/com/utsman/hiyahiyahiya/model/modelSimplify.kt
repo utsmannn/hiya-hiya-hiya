@@ -9,3 +9,4 @@ fun typingBody(typingBody: TypingBody.() -> Unit) = TypingBody().apply(typingBod
 fun localUser(u: LocalUser.() -> Unit) = LocalUser().apply(u)
 fun chatRoom(roomItem: RowRoom.RoomItem.() -> Unit) = RowRoom.RoomItem().apply(roomItem)
 fun chatItem(item: RowChatItem.ChatItem.() -> Unit) = RowChatItem.ChatItem().apply(item)
+fun photo(photoLocal: PhotoLocal.() -> Unit) = PhotoLocal().apply(photoLocal)
