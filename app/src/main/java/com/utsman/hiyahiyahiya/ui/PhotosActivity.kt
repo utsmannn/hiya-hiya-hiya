@@ -1,18 +1,13 @@
 package com.utsman.hiyahiyahiya.ui
 
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
-import android.graphics.Matrix
 import android.hardware.Camera
 import android.os.Bundle
-import android.os.Environment
 import android.view.SurfaceHolder
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -22,12 +17,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.model.RowImage
+import com.utsman.hiyahiyahiya.model.RowRoom
 import com.utsman.hiyahiyahiya.ui.adapter.PhotoAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.PhotosViewModel
-import com.utsman.hiyahiyahiya.utils.click
-import com.utsman.hiyahiyahiya.utils.intentTo
-import com.utsman.hiyahiyahiya.utils.logi
-import com.utsman.hiyahiyahiya.utils.toast
+import com.utsman.hiyahiyahiya.utils.*
 import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.bottom_sheet_photos.*
 import kotlinx.coroutines.GlobalScope
@@ -36,9 +29,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.io.IOException
 
 
@@ -53,6 +43,8 @@ class PhotosActivity : AppCompatActivity() {
     private var flashOn = true
 
     private val liveCameraFacing: MutableLiveData<Int> = MutableLiveData(BACK_CAMERA)
+    private val room by lazy { intent.getParcelableExtra<RowRoom.RoomItem>("room") }
+    private val toMember by lazy { intent.getStringExtra("to") }
 
     private var camera: Camera? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +90,8 @@ class PhotosActivity : AppCompatActivity() {
     private fun takingPicture() {
         if (camera != null) {
             camera?.takePicture(null, null, Camera.PictureCallback { data, camera ->
-                saveImage(data) { file ->
+                logi("bytes raw ---> $data")
+                data.saveImage(validation = liveCameraFacing.value == FRONT_CAMERA) { file ->
                     val path = file.absolutePath
                     intentToResult(path)
                 }
@@ -109,66 +102,10 @@ class PhotosActivity : AppCompatActivity() {
     private fun intentToResult(path: String) {
         intentTo(ImageResultActivity::class.java) {
             putExtra("image_path", path)
+            putExtra("room", room)
+            putExtra("to", toMember)
         }
         finish()
-    }
-
-    private fun saveImage(bytes: ByteArray, result: (File) -> Unit) {
-        try {
-            val folder = File(Environment.getExternalStorageDirectory(), "WA_h3")
-            if (!folder.exists()) {
-                folder.mkdirs()
-            }
-            val fileName = "/WA_h3/HIYA_HIYA_HIYA_" + System.currentTimeMillis() + ".jpg"
-            val file = File(Environment.getExternalStorageDirectory(), fileName)
-            if (file.exists()) {
-                file.delete()
-            }
-
-            try {
-                val fos = FileOutputStream(file)
-                var realImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                val exif = ExifInterface(file.toString())
-                when {
-                    exif.getAttribute(ExifInterface.TAG_ORIENTATION) == "6" -> {
-                        realImage = rotate(realImage, 90f)
-                    }
-                    exif.getAttribute(ExifInterface.TAG_ORIENTATION) == "8" -> {
-                        realImage = rotate(realImage, 270f)
-                    }
-                    exif.getAttribute(ExifInterface.TAG_ORIENTATION) == "3" -> {
-                        realImage = rotate(realImage, 0f)
-                    }
-                    exif.getAttribute(ExifInterface.TAG_ORIENTATION) == "0" -> {
-                        realImage = if (liveCameraFacing.value == FRONT_CAMERA) {
-                            rotate(realImage, 270f)
-                        } else {
-                            rotate(realImage, 90f)
-                        }
-                    }
-                }
-                realImage.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                fos.close()
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            result.invoke(file)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun rotate(bitmap: Bitmap, degree: Float): Bitmap? {
-        val w = bitmap.width
-        val h = bitmap.height
-        val mtx = Matrix()
-        mtx.setRotate(degree)
-        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true)
     }
 
 
@@ -181,10 +118,12 @@ class PhotosActivity : AppCompatActivity() {
                 rv_photo2.alpha = slideOffset
 
                 if (slideOffset > 0) {
+                    container_control.visibility = View.GONE
                     bg_view.visibility = View.VISIBLE
                     tx_all_photos.visibility = View.VISIBLE
                     rv_photo2.visibility = View.VISIBLE
                 } else {
+                    container_control.visibility = View.VISIBLE
                     bg_view.visibility = View.GONE
                     tx_all_photos.visibility = View.GONE
                     rv_photo2.visibility = View.GONE

@@ -19,7 +19,10 @@ sealed class RowChatItem(var rowChatType: RowChatType) {
         var time: Long? = 0L,
         @SerializedName("room_id")
         var roomId: String? = "",
-        var attachment: List<MessageAttachment> = emptyList(),
+        @SerializedName("image_attachment")
+        var imageAttachment: List<ImageAttachment> = emptyList(),
+        @SerializedName("url_attachment")
+        var urlAttachment: UrlAttachment = UrlAttachment(),
         @SerializedName("current_user")
         var currentUser: LocalUser? = LocalUser(),
         @SerializedName("local_chat_status")

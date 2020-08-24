@@ -54,6 +54,9 @@ class FcmServices : FirebaseMessagingService() {
                     val roomId = payloadChat.roomId ?: UUID.randomUUID().toString()
                     val roomFound = localRoomDb.localRoomDao().localRoom(roomId)
 
+                    val attach = payloadChat.imageAttachment
+                    logi("attachment -----> $attach")
+
                     if (roomFound != null) {
                         roomFound.run {
                             this.chatsId.toMutableList().add(payloadChat.id)
@@ -135,7 +138,7 @@ class FcmServices : FirebaseMessagingService() {
         val user = localUserDb.localUserDao().localUser(UserPref.getUserId())
         user?.token = newToken
         GlobalScope.launch {
-            user?.let {  u ->
+            user?.let { u ->
                 localUserDb.localUserDao().update(u)
                 val messageBody = messageBody {
                     fromMessage = u.id

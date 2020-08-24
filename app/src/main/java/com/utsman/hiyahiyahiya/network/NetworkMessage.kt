@@ -3,6 +3,7 @@ package com.utsman.hiyahiyahiya.network
 import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.utsman.hiyahiyahiya.data.ConstantValue
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.model.MessageBody
@@ -12,9 +13,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class NetworkMessage(componentCallbacks: ComponentCallbacks) {
-    private val networkInstance: NetworkInstance by componentCallbacks.inject()
+    private val networkInstanceMessages: NetworkInstanceMessages by componentCallbacks.inject { parametersOf(ConstantValue.baseUrlFcm) }
     private val localUserDb: LocalUserDatabase by componentCallbacks.inject()
 
     fun send(activity: AppCompatActivity, messageBody: MessageBody, messageCallback: MessageCallback) {
@@ -32,10 +34,11 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
 
             val gson = Gson()
             val json = gson.toJson(rawBody)
+
             logi("raw body is -> $json")
 
             try {
-                val response = networkInstance.sendMessage(rawBody)
+                val response = networkInstanceMessages.sendMessage(rawBody)
                 activity.runOnUiThread {
                     if (response.success == 1) {
                         messageCallback.onSuccess()
@@ -70,7 +73,7 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
             logi("raw body is -> $json")
 
             try {
-                val response = networkInstance.sendMessage(rawBody)
+                val response = networkInstanceMessages.sendMessage(rawBody)
                 if (response.success == 1) {
                     messageCallback.onSuccess()
                 }

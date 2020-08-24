@@ -130,7 +130,11 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             )
             withPermissions(listPermission) { _, deniedList ->
                 if (deniedList.isEmpty()) {
-                    intentTo(PhotosActivity::class.java)
+                    intentTo(PhotosActivity::class.java) {
+                        putExtra("room", roomItem)
+                        putExtra("to", to)
+                    }
+
                 }
             }
         }

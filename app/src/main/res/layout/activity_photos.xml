@@ -16,6 +16,7 @@
         android:layout_height="70dp"
         android:layout_gravity="bottom"
         android:translationZ="9dp"
+        android:id="@+id/container_control"
         android:gravity="center"
         android:orientation="horizontal"
         tools:ignore="UnusedAttribute">

@@ -3,7 +3,6 @@ package com.utsman.hiyahiyahiya.network
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.utsman.hiyahiyahiya.data.ConstantValue
-import com.utsman.hiyahiyahiya.model.MessageBody
 import com.utsman.hiyahiyahiya.model.ResponseMessage
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,7 +10,7 @@ import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
-interface NetworkInstance {
+interface NetworkInstanceMessages {
 
     @POST("/fcm/send")
     @Headers("Authorization: key=${ConstantValue.serverKey}", "Content-Type: application/json")
@@ -25,10 +24,10 @@ interface NetworkInstance {
             .create()
 
         private val retrofit = Retrofit.Builder()
-            .baseUrl(ConstantValue.baseUrl)
+            .baseUrl(ConstantValue.baseUrlFcm)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
             .build()
 
-        fun create(): NetworkInstance = retrofit.create(NetworkInstance::class.java)
+        fun create(): NetworkInstanceMessages = retrofit.create(NetworkInstanceMessages::class.java)
     }
 }

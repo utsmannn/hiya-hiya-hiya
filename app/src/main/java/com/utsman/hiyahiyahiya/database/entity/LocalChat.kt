@@ -6,8 +6,9 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
+import com.utsman.hiyahiyahiya.model.ImageAttachment
 import com.utsman.hiyahiyahiya.model.LocalChatStatus
-import com.utsman.hiyahiyahiya.model.MessageAttachment
+import com.utsman.hiyahiyahiya.model.UrlAttachment
 
 @Entity(tableName = "local_chat")
 data class LocalChat(
@@ -19,7 +20,10 @@ data class LocalChat(
     var time: Long? = 0L,
     @SerializedName("room_id")
     var roomId: String? = "",
-    var attachment: List<MessageAttachment> = emptyList(),
+    @SerializedName("image_attachment")
+    var imageAttachment: List<ImageAttachment> = emptyList(),
+    @SerializedName("url_attachment")
+    var urlAttachment: UrlAttachment = UrlAttachment(),
     @SerializedName("current_user")
     var currentUser: LocalUser?,
     @SerializedName("local_chat_status")
@@ -30,13 +34,24 @@ data class LocalChat(
         private val gson = Gson()
 
         @TypeConverter
-        fun fromListAttachment(value: List<MessageAttachment>): String {
-            return value.toString()
+        fun fromListImageAttachment(value: List<ImageAttachment>): String {
+            return gson.toJson(value)
         }
 
         @TypeConverter
-        fun toListAttachment(value: String): List<MessageAttachment> {
-            return gson.fromJson(value, object : TypeToken<List<MessageAttachment>>() {
+        fun toListImageAttachment(value: String): List<ImageAttachment> {
+            return gson.fromJson(value, object : TypeToken<List<ImageAttachment>>() {
+            }.type)
+        }
+
+        @TypeConverter
+        fun fromUrlAttachment(value: UrlAttachment): String {
+            return gson.toJson(value)
+        }
+
+        @TypeConverter
+        fun toUrlAttachment(value: String): UrlAttachment {
+            return gson.fromJson(value, object : TypeToken<UrlAttachment>() {
             }.type)
         }
 
