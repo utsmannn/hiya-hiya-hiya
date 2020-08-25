@@ -5,21 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.model.RowContact
-import com.utsman.hiyahiyahiya.model.chatRoom
+import com.utsman.hiyahiyahiya.model.row.RowContact
+import com.utsman.hiyahiyahiya.model.utils.chatRoom
 import com.utsman.hiyahiyahiya.ui.adapter.ContactAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.ContactViewModel
 import com.utsman.hiyahiyahiya.utils.generateIdRoom
 import com.utsman.hiyahiyahiya.utils.intentTo
-import com.utsman.hiyahiyahiya.utils.logi
 import com.utsman.hiyahiyahiya.viewmodel.AuthViewModel
 import kotlinx.android.synthetic.main.activity_contacts.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
 
 class ContactsActivity : AppCompatActivity() {
     private val viewModel: ContactViewModel by viewModel()

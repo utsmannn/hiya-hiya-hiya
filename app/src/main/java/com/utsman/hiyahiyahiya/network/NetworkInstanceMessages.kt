@@ -3,7 +3,7 @@ package com.utsman.hiyahiyahiya.network
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.utsman.hiyahiyahiya.data.ConstantValue
-import com.utsman.hiyahiyahiya.model.ResponseMessage
+import com.utsman.hiyahiyahiya.model.features.ResponseMessage
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body

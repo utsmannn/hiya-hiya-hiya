@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.features
 
 data class PhotoLocal(
     var date: String = "",

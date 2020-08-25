@@ -10,14 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.di.network
-import com.utsman.hiyahiyahiya.model.RowRoom
+import com.utsman.hiyahiyahiya.model.row.RowRoom
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.ui.ChatRoomActivity
 import com.utsman.hiyahiyahiya.ui.adapter.RoomAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.RoomViewModel
 import com.utsman.hiyahiyahiya.utils.intentTo
-import com.utsman.hiyahiyahiya.utils.logi
-import com.utsman.hiyahiyahiya.utils.toast
 import kotlinx.android.synthetic.main.fragment_rooms.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

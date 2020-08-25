@@ -7,11 +7,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.data.UserPref
-import com.utsman.hiyahiyahiya.model.LocalChatStatus
-import com.utsman.hiyahiyahiya.model.RowRoom
-import com.utsman.hiyahiyahiya.model.RowRoomType
-import com.utsman.hiyahiyahiya.model.toLocalRoom
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
+import com.utsman.hiyahiyahiya.model.row.RowRoom
+import com.utsman.hiyahiyahiya.model.row.RowRoomType
 import com.utsman.hiyahiyahiya.utils.click
 import com.utsman.hiyahiyahiya.utils.load
 import kotlinx.android.synthetic.main.item_list_empty.view.*

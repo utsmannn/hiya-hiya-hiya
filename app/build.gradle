@@ -16,7 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        //multiDexEnabled true
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -70,13 +70,14 @@ dependencies {
     implementation 'org.koin:koin-androidx-scope:2.1.5'
     implementation 'org.koin:koin-androidx-viewmodel:2.1.5'
 
-    //implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation 'com.afollestad.inline-activity-result:core:0.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.vanniktech:emoji-google:0.7.0'
     implementation 'com.karumi:dexter:6.0.2'
     implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.otaliastudios:cameraview:2.6.3'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'

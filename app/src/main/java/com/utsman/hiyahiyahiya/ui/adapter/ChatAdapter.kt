@@ -1,52 +1,15 @@
 package com.utsman.hiyahiyahiya.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.model.LocalChatStatus
-import com.utsman.hiyahiyahiya.model.RowChatItem
-import com.utsman.hiyahiyahiya.model.RowChatType
-import kotlinx.android.synthetic.main.item_chat_me.view.*
-import kotlinx.android.synthetic.main.item_chat_other.view.*
-import kotlinx.android.synthetic.main.item_list_empty.view.*
+import com.utsman.hiyahiyahiya.model.row.RowChatItem
+import com.utsman.hiyahiyahiya.model.row.RowChatType
+import com.utsman.hiyahiyahiya.ui.adapter.chat_viewholder.*
 
 class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    inner class ItemChatMeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
-            tx_message_me.text = itemChatItem.message
-            tx_status_me.text = itemChatItem.stringTime()
-
-            when (itemChatItem.localChatStatus) {
-                LocalChatStatus.NONE -> img_send_indicator.visibility = View.GONE
-                LocalChatStatus.SEND -> {
-                    img_send_indicator.visibility = View.VISIBLE
-                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_done_24))
-                }
-                LocalChatStatus.RECEIVED -> {
-                    img_send_indicator.visibility = View.VISIBLE
-                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
-                }
-            }
-        }
-    }
-
-    inner class ItemChatOtherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
-            tx_message_other.text = itemChatItem.message
-            tx_status_other.text = itemChatItem.stringTime()
-        }
-    }
-
-    inner class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(empty: RowChatItem.Empty) = itemView.run {
-            tx_empty_message.text = empty.text
-        }
-    }
 
     inner class ContactDiffCallback(
         private val oldList: List<RowChatItem>,
@@ -80,10 +43,22 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             RowChatType.ME -> ItemChatMeViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_chat_me, parent, false)
             )
+            RowChatType.ME_IMAGE -> ItemChatMeImageViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_chat_me_images, parent, false)
+            )
+            RowChatType.ME_URL -> ItemChatMeUrlViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_chat_me_url, parent, false)
+            )
             RowChatType.OTHER -> ItemChatOtherViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other, parent, false)
             )
-            RowChatType.EMPTY -> EmptyViewHolder(
+            RowChatType.OTHER_IMAGE -> ItemChatOtherImageViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other_image, parent, false)
+            )
+            RowChatType.OTHER_URL -> ItemChatOtherUrlViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other_url, parent, false)
+            )
+            else -> EmptyViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_list_empty, parent, false)
             )
         }
@@ -97,6 +72,10 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is RowChatItem.ChatItem -> {
                 when (item.rowChatType) {
                     RowChatType.ME -> (holder as ItemChatMeViewHolder).bind(item)
+                    RowChatType.ME_IMAGE -> (holder as ItemChatMeImageViewHolder).bind(item)
+                    RowChatType.ME_URL -> (holder as ItemChatMeUrlViewHolder).bind(item)
+                    RowChatType.OTHER_IMAGE -> (holder as ItemChatOtherImageViewHolder).bind(item)
+                    RowChatType.OTHER_URL -> (holder as ItemChatOtherUrlViewHolder).bind(item)
                     else -> (holder as ItemChatOtherViewHolder).bind(item)
                 }
             }

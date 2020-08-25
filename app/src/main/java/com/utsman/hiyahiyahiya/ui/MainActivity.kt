@@ -7,9 +7,9 @@ import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.di.network
-import com.utsman.hiyahiyahiya.model.localUser
-import com.utsman.hiyahiyahiya.model.messageBody
-import com.utsman.hiyahiyahiya.model.TypeMessage
+import com.utsman.hiyahiyahiya.model.utils.localUser
+import com.utsman.hiyahiyahiya.model.utils.messageBody
+import com.utsman.hiyahiyahiya.model.types.TypeMessage
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.ui.adapter.ChatPagerAdapter
 import com.utsman.hiyahiyahiya.ui.fragment.RoomsFragment

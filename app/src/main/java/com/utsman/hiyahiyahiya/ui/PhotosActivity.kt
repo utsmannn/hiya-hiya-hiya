@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.model.RowImage
-import com.utsman.hiyahiyahiya.model.RowRoom
+import com.utsman.hiyahiyahiya.model.row.RowImage
+import com.utsman.hiyahiyahiya.model.row.RowRoom
 import com.utsman.hiyahiyahiya.ui.adapter.PhotoAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.PhotosViewModel
 import com.utsman.hiyahiyahiya.utils.*

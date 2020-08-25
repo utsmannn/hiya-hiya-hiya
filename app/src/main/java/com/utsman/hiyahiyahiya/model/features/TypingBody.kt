@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.features
 
 import com.google.gson.annotations.SerializedName
 

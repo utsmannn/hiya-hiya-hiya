@@ -4,9 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.utsman.hiyahiyahiya.model.PhotoLocal
-import com.utsman.hiyahiyahiya.model.photo
-import kotlinx.coroutines.*
+import com.utsman.hiyahiyahiya.model.features.PhotoLocal
+import com.utsman.hiyahiyahiya.model.utils.photo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

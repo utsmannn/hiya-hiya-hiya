@@ -91,20 +91,18 @@ fun EditText.debounce(delay: Long, subscribe: (String) -> Unit) {
     var resultFor = ""
     addTextChangedListener {
         doOnTextChanged { text, _, _, _ ->
-            if ((text?.length ?: 0) >= 1) {
-                val resultText = text.toString().trim()
-                if (resultText == resultFor)
-                    return@doOnTextChanged
+            val resultText = text.toString().trim()
+            if (resultText == resultFor)
+                return@doOnTextChanged
 
-                resultFor = resultText
+            resultFor = resultText
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    kotlinx.coroutines.delay(delay)
-                    if (resultText != resultFor)
-                        return@launch
+            CoroutineScope(Dispatchers.Main).launch {
+                kotlinx.coroutines.delay(delay)
+                if (resultText != resultFor)
+                    return@launch
 
-                    subscribe.invoke(resultFor)
-                }
+                subscribe.invoke(resultFor)
             }
         }
     }
@@ -139,6 +137,25 @@ private fun Context.getStatusBarHeight(): Int {
     return statusBarHeight
 }
 
+fun View.goneAnimation() {
+    animate()
+        .alpha(0f)
+        .setDuration(400)
+        .withStartAction {
+            visibility = View.GONE
+        }
+        .start()
+}
+
+fun View.visibleAnimation(alpha: Float) {
+    animate()
+        .alpha(alpha)
+        .setDuration(400)
+        .withStartAction {
+            visibility = View.VISIBLE
+        }
+        .start()
+}
 
 fun Activity.makeStatusBarTransparent(pushPadding: Boolean = true) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -1,7 +1,8 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.row
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import kotlinx.android.parcel.Parcelize
 
 enum class RowRoomType {

@@ -6,9 +6,9 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
-import com.utsman.hiyahiyahiya.model.ImageAttachment
-import com.utsman.hiyahiyahiya.model.LocalChatStatus
-import com.utsman.hiyahiyahiya.model.UrlAttachment
+import com.utsman.hiyahiyahiya.model.features.ImageAttachment
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
+import com.utsman.hiyahiyahiya.model.features.UrlAttachment
 
 @Entity(tableName = "local_chat")
 data class LocalChat(
@@ -23,7 +23,7 @@ data class LocalChat(
     @SerializedName("image_attachment")
     var imageAttachment: List<ImageAttachment> = emptyList(),
     @SerializedName("url_attachment")
-    var urlAttachment: UrlAttachment = UrlAttachment(),
+    var urlAttachment: UrlAttachment? = null,
     @SerializedName("current_user")
     var currentUser: LocalUser?,
     @SerializedName("local_chat_status")
@@ -45,12 +45,12 @@ data class LocalChat(
         }
 
         @TypeConverter
-        fun fromUrlAttachment(value: UrlAttachment): String {
+        fun fromUrlAttachment(value: UrlAttachment?): String? {
             return gson.toJson(value)
         }
 
         @TypeConverter
-        fun toUrlAttachment(value: String): UrlAttachment {
+        fun toUrlAttachment(value: String?): UrlAttachment? {
             return gson.fromJson(value, object : TypeToken<UrlAttachment>() {
             }.type)
         }

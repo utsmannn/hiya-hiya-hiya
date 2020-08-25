@@ -3,8 +3,8 @@ package com.utsman.hiyahiyahiya.network
 import android.app.Activity
 import android.content.ComponentCallbacks
 import com.utsman.hiyahiyahiya.data.ConstantValue
-import com.utsman.hiyahiyahiya.model.ImageBBSimple
-import com.utsman.hiyahiyahiya.model.toImageBBSimple
+import com.utsman.hiyahiyahiya.model.features.ImageBBSimple
+import com.utsman.hiyahiyahiya.model.features.toImageBBSimple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

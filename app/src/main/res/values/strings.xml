@@ -2,4 +2,5 @@
     <string name="app_name">Hiya hiya hiya</string>
     <string name="type_message">Type message...</string>
     <string name="lorem_ipsum">lorem ipsum dolor si amet</string>
+    <string name="lorem_ipsum_dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel malesuada augue, non posuere lectus. Fusce sed sodales orci, a pharetra turpis.</string>
 </resources>

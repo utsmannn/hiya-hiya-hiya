@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.model.RowContact
-import com.utsman.hiyahiyahiya.model.RowType
+import com.utsman.hiyahiyahiya.model.row.RowContact
+import com.utsman.hiyahiyahiya.model.row.RowType
 import com.utsman.hiyahiyahiya.utils.click
 import com.utsman.hiyahiyahiya.utils.load
 import com.utsman.hiyahiyahiya.utils.logi

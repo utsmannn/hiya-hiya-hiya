@@ -3,11 +3,10 @@ package com.utsman.hiyahiyahiya.network
 import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.utsman.hiyahiyahiya.data.ConstantValue
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
-import com.utsman.hiyahiyahiya.model.MessageBody
-import com.utsman.hiyahiyahiya.model.TypeMessage
+import com.utsman.hiyahiyahiya.model.features.MessageBody
+import com.utsman.hiyahiyahiya.model.types.TypeMessage
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

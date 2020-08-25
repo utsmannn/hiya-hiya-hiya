@@ -10,9 +10,15 @@ import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
 import com.utsman.hiyahiyahiya.di.network
-import com.utsman.hiyahiyahiya.model.*
 import com.utsman.hiyahiyahiya.network.NetworkMessage
-import com.utsman.hiyahiyahiya.model.TypeMessage
+import com.utsman.hiyahiyahiya.model.types.TypeMessage
+import com.utsman.hiyahiyahiya.model.features.MessageStatusBody
+import com.utsman.hiyahiyahiya.model.features.TypingBody
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
+import com.utsman.hiyahiyahiya.model.utils.chatRoom
+import com.utsman.hiyahiyahiya.model.utils.messageBody
+import com.utsman.hiyahiyahiya.model.utils.messageStatusBody
+import com.utsman.hiyahiyahiya.model.utils.toLocalRoom
 import com.utsman.hiyahiyahiya.utils.Broadcast
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.GlobalScope
@@ -56,6 +62,9 @@ class FcmServices : FirebaseMessagingService() {
 
                     val attach = payloadChat.imageAttachment
                     logi("attachment -----> $attach")
+
+                    val urlAttachment = payloadChat.urlAttachment
+                    logi("url attachment --------> $urlAttachment")
 
                     if (roomFound != null) {
                         roomFound.run {

@@ -1,4 +1,6 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.features
+
+import com.utsman.hiyahiyahiya.model.types.TypeMessage
 
 data class MessageBody(
     var fromMessage: String? = "",

@@ -1,17 +1,20 @@
 package com.utsman.hiyahiyahiya.ui
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
-import com.utsman.hiyahiyahiya.database.entity.LocalUser
 import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.di.networkImage
-import com.utsman.hiyahiyahiya.model.*
+import com.utsman.hiyahiyahiya.model.features.ImageAttachment
+import com.utsman.hiyahiyahiya.model.features.ImageBBSimple
+import com.utsman.hiyahiyahiya.model.row.RowRoom
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
+import com.utsman.hiyahiyahiya.model.types.TypeMessage
+import com.utsman.hiyahiyahiya.model.utils.*
 import com.utsman.hiyahiyahiya.network.NetworkImageBB
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.ui.viewmodel.ChatViewModel
@@ -19,7 +22,6 @@ import com.utsman.hiyahiyahiya.ui.viewmodel.RoomViewModel
 import com.utsman.hiyahiyahiya.utils.*
 import kotlinx.android.synthetic.main.activity_image_result.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

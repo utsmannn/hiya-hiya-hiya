@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.row
 
 enum class RowImageType {
     PHOTO_1, PHOTO_2

@@ -6,7 +6,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
-import com.utsman.hiyahiyahiya.model.LocalChatStatus
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 
 @Entity(tableName = "local_room")
 data class LocalRoom(

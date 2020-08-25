@@ -1,6 +1,7 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.features
 
 import com.google.gson.annotations.SerializedName
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 
 data class MessageStatusBody(
     @SerializedName("chat_id")

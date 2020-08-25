@@ -1,6 +1,9 @@
-package com.utsman.hiyahiyahiya.model
+package com.utsman.hiyahiyahiya.model.utils
 
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
+import com.utsman.hiyahiyahiya.model.features.*
+import com.utsman.hiyahiyahiya.model.row.RowChatItem
+import com.utsman.hiyahiyahiya.model.row.RowRoom
 
 fun messageBody(msg: MessageBody.() -> Unit) = MessageBody().apply(msg)
 fun messageStatusBody(body: MessageStatusBody.() -> Unit) = MessageStatusBody().apply(body)

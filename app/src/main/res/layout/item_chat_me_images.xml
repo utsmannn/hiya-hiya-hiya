@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_me_chat"
     android:layout_width="match_parent"
@@ -12,19 +13,34 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
         android:background="@drawable/img_bubble_me"
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="6dp"
+            app:cardElevation="2dp">
+
+            <ImageView
+                android:id="@+id/img_message_me"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@color/colorPrimary" />
+
+        </androidx.cardview.widget.CardView>
+
         <TextView
             android:id="@+id/tx_message_me"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:autoLink="all"
             android:layout_marginTop="6dp"
+            android:autoLink="all"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
             android:textColor="#fff"

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.utsman.hiyahiyahiya.data.repository.ContactRepository
-import com.utsman.hiyahiyahiya.model.toContact
+import com.utsman.hiyahiyahiya.model.utils.toContact
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map

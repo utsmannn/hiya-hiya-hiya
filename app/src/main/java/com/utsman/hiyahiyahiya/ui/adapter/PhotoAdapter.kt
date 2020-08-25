@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.model.RowImage
-import com.utsman.hiyahiyahiya.model.RowImageType
+import com.utsman.hiyahiyahiya.model.row.RowImage
+import com.utsman.hiyahiyahiya.model.row.RowImageType
 import com.utsman.hiyahiyahiya.utils.click
 import com.utsman.hiyahiyahiya.utils.toast
 import java.io.File

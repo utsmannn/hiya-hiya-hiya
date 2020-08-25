@@ -5,7 +5,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.utsman.hiyahiyahiya.data.repository.ChatRepository
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
-import com.utsman.hiyahiyahiya.model.toChat
+import com.utsman.hiyahiyahiya.model.utils.toChat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
