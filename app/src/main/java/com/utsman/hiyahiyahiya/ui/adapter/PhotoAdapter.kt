@@ -53,6 +53,14 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
         this.onPhotoClick = onPhotoClick
     }
 
+    fun addAllPhoto(list: List<RowImage>) = apply {
+        val diffCallback = ContactDiffCallback(listPhoto, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        listPhoto.clear()
+        listPhoto.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
     fun addPhoto(photo: RowImage) = apply {
         val diffCallback = ContactDiffCallback(listPhoto, listOf(photo))
         val diffResult = DiffUtil.calculateDiff(diffCallback)

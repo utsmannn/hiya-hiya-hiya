@@ -106,9 +106,6 @@ class ImageResultActivity : AppCompatActivity() {
             this.payload = chat.toLocalChat()
         }
 
-        logi(messageBody.toString())
-        //toast(messageBody.toString())
-
         chatRoomViewModel.insert(chat.toLocalChat())
         roomViewModel.insert(room.toLocalRoom())
 

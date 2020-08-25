@@ -139,7 +139,8 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             val listPermission = listOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO
             )
             withPermissions(listPermission) { _, deniedList ->
                 if (deniedList.isEmpty()) {

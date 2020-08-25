@@ -1,9 +1,6 @@
 package com.utsman.hiyahiyahiya.di
 
-import com.utsman.hiyahiyahiya.ui.adapter.ChatAdapter
-import com.utsman.hiyahiyahiya.ui.adapter.ContactAdapter
-import com.utsman.hiyahiyahiya.ui.adapter.PhotoAdapter
-import com.utsman.hiyahiyahiya.ui.adapter.RoomAdapter
+import com.utsman.hiyahiyahiya.ui.adapter.*
 import org.koin.dsl.module
 
 val adapterModule = module {
@@ -11,4 +8,5 @@ val adapterModule = module {
     factory { ChatAdapter() }
     factory { RoomAdapter() }
     factory { PhotoAdapter() }
+    factory { PhotosPagedAdapter() }
 }
