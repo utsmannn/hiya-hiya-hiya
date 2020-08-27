@@ -1,11 +1,23 @@
 package com.utsman.hiyahiyahiya.services
 
+import android.app.Notification
+import android.app.PendingIntent
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
+import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.*
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
+import com.utsman.hiyahiyahiya.database.entity.LocalRoom
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
 import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.network.NetworkMessage
@@ -13,14 +25,17 @@ import com.utsman.hiyahiyahiya.model.types.TypeMessage
 import com.utsman.hiyahiyahiya.model.body.MessageStatusBody
 import com.utsman.hiyahiyahiya.model.body.StoryBody
 import com.utsman.hiyahiyahiya.model.body.TypingBody
+import com.utsman.hiyahiyahiya.model.features.ImageAttachment
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.utils.*
+import com.utsman.hiyahiyahiya.ui.ChatRoomActivity
 import com.utsman.hiyahiyahiya.utils.Broadcast
 import com.utsman.hiyahiyahiya.utils.generateIdImageBB
 import com.utsman.hiyahiyahiya.utils.generateIdStory
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 import java.util.*
 
 class FcmServices : FirebaseMessagingService() {
@@ -32,6 +47,17 @@ class FcmServices : FirebaseMessagingService() {
     private val localImageBBDatabase: LocalImageBBDatabase by inject()
 
     private val network: NetworkMessage by network()
+    private var notificationActive = true
+
+    private lateinit var builder: NotificationCompat.Builder
+
+    override fun onCreate() {
+        super.onCreate()
+        builder = NotificationCompat.Builder(this, "hiya-hiya")
+            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+    }
 
     override fun onMessageReceived(remote: RemoteMessage) {
         super.onMessageReceived(remote)
@@ -60,25 +86,15 @@ class FcmServices : FirebaseMessagingService() {
                     val roomFound = localRoomDb.localRoomDao().localRoom(roomId)
 
                     val imageAttach = payloadChat.imageAttachment
-                    logi("attachment -----> $imageAttach")
-
-                    val urlAttachment = payloadChat.urlAttachment
-                    logi("url attachment --------> $urlAttachment")
-
-                    if (roomFound != null) {
-                        roomFound.run {
-                            this.chatsId.toMutableList().add(payloadChat.id)
-                            this.subtitleRoom = payloadChat.message
-                            this.titleRoom = payloadChat.currentUser?.name
-                            this.imageRoom = payloadChat?.currentUser?.photoUri
-                            this.lastDate = payloadChat.time
-                            this.localChatStatus = LocalChatStatus.NONE
-                            this.imageBadge = imageAttach.isNotEmpty()
-                        }
-                        delay(300)
-                        localRoomDb.localRoomDao().update(roomFound)
-                    } else {
-                        val newRoom = chatRoom {
+                    val room = roomFound?.apply {
+                        this.chatsId.toMutableList().add(payloadChat.id)
+                        this.subtitleRoom = payloadChat.message
+                        this.titleRoom = payloadChat.currentUser?.name
+                        this.imageRoom = payloadChat?.currentUser?.photoUri
+                        this.lastDate = payloadChat.time
+                        this.localChatStatus = LocalChatStatus.NONE
+                        this.imageBadge = imageAttach.isNotEmpty()
+                    } ?: chatRoom {
                             this.id = roomId
                             this.titleRoom = payloadChat.currentUser?.name
                             this.subtitleRoom = payloadChat.message
@@ -88,32 +104,18 @@ class FcmServices : FirebaseMessagingService() {
                             this.imageRoom = payloadChat.currentUser?.photoUri
                             this.localChatStatus = LocalChatStatus.NONE
                             this.imageBadge = imageAttach.isNotEmpty()
+                        }.toLocalRoom()
+
+                    delay(300)
+                    localRoomDb.localRoomDao().insert(room)
+
+                    showNotification(payloadChat, room, imageAttach) { b ->
+                        val notificationId = System.currentTimeMillis().toString().takeLast(4).toInt()
+                        with(NotificationManagerCompat.from(this@FcmServices)) {
+                            notify(notificationId, b.build())
                         }
-
-                        localRoomDb.localRoomDao().insert(newRoom.toLocalRoom())
                     }
-
-                    val messageStatusBody = messageStatusBody {
-                        this.chatId = payloadChat.id
-                        this.localStatus = LocalChatStatus.RECEIVED
-                        this.ownerId = UserPref.getUserId()
-                    }
-
-                    val messageBody = messageBody {
-                        this.fromMessage = UserPref.getUserId()
-                        this.toMessage = otherId
-                        this.typeMessage = TypeMessage.LOCAL_STATUS
-                        this.payload = messageStatusBody
-                    }
-
-                    network.send(messageBody, object : NetworkMessage.MessageCallback {
-                        override fun onSuccess() {
-                        }
-
-                        override fun onFailed(message: String?) {
-                        }
-
-                    })
+                    sendCallbackStatus(payloadChat, otherId)
                 }
             }
             TypeMessage.LOCAL_STATUS -> {
@@ -176,6 +178,55 @@ class FcmServices : FirebaseMessagingService() {
         }
 
         logi("message type is -->> $type ")
+    }
+
+    private fun showNotification(payloadChat: LocalChat?, room: LocalRoom, imageAttach: List<ImageAttachment>, result: (NotificationCompat.Builder) -> Unit) {
+        val intent = Intent(this, ChatRoomActivity::class.java).run {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("room", room.toRowRoom())
+            putExtra("to", payloadChat?.to)
+        }
+
+        val pendingIntent =  TaskStackBuilder.create(this).run {
+            addNextIntent(intent)
+            getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT)
+        }
+
+        builder.apply {
+            setContentIntent(pendingIntent)
+            setContentTitle(payloadChat?.currentUser?.name)
+            val contentText = if (imageAttach.isNotEmpty()) {
+                "\uD83D\uDCF7 ${payloadChat?.message}"
+            } else {
+                payloadChat?.message
+            }
+            setContentText(contentText)
+        }
+        result.invoke(builder)
+    }
+
+    private fun sendCallbackStatus(payloadChat: LocalChat, otherId: String) {
+        val messageStatusBody = messageStatusBody {
+            this.chatId = payloadChat.id
+            this.localStatus = LocalChatStatus.RECEIVED
+            this.ownerId = UserPref.getUserId()
+        }
+
+        val messageBody = messageBody {
+            this.fromMessage = UserPref.getUserId()
+            this.toMessage = otherId
+            this.typeMessage = TypeMessage.LOCAL_STATUS
+            this.payload = messageStatusBody
+        }
+
+        network.send(messageBody, object : NetworkMessage.MessageCallback {
+            override fun onSuccess() {
+            }
+
+            override fun onFailed(message: String?) {
+            }
+
+        })
     }
 
     override fun onNewToken(newToken: String) {

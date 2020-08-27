@@ -1,7 +1,11 @@
 package com.utsman.hiyahiyahiya.ui
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +24,7 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+        registerNotification()
 
         val user = viewModel.requestUser()
         updateUi(user, null)
@@ -28,6 +33,20 @@ class AuthActivity : AppCompatActivity() {
             viewModel.login(this) { user, s ->
                 updateUi(user, s)
             }
+        }
+    }
+
+    private fun registerNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val nameDefault = "Message notification"
+            val descriptionTextDefault = "Notify when incoming message"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("hiya-hiya", nameDefault, importance).apply {
+                description = descriptionTextDefault
+            }
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 

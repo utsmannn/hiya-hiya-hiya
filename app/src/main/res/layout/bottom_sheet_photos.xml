@@ -26,11 +26,15 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/indicator_up"
             android:src="@drawable/ic_baseline_arrow_drop_up_24"
             app:tint="@android:color/white" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
+            android:layout_below="@id/indicator_up"
             android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -39,7 +43,6 @@
                 android:layout_height="70dp" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
         <TextView
             android:id="@+id/tx_all_photos"
