@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/chatBg"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_chat"
@@ -23,8 +26,7 @@
                 android:id="@+id/img_toolbar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp" />
+                android:layout_marginEnd="12dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,27 +58,29 @@
         android:id="@+id/rv_chat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:clipToPadding="false"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        android:padding="3dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_constraintBottom_toTopOf="@+id/container_input"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <LinearLayout
         android:id="@+id/container_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="6dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_input_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:minHeight="50dp"
             android:layout_margin="6dp"
             android:layout_weight="1"
-            android:id="@+id/card_input_container"
             android:animateLayoutChanges="true"
+            android:minHeight="50dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="1dp">
 
@@ -86,15 +90,15 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/card_url_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
-                    android:id="@+id/card_url_input"
                     android:layout_marginTop="6dp"
-                    android:animateLayoutChanges="true"
                     android:layout_marginRight="6dp"
-                    app:cardCornerRadius="16dp"
+                    android:animateLayoutChanges="true"
                     app:cardBackgroundColor="@color/cardUrl"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp">
 
                     <LinearLayout
@@ -107,8 +111,8 @@
                             android:layout_width="80dp"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
-                            android:src="@color/colorAccent"
                             android:scaleType="centerCrop"
+                            android:src="@color/colorAccent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintDimensionRatio="1:1"
                             app:layout_constraintStart_toStartOf="parent" />
@@ -132,14 +136,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
-                                android:maxLines="1"/>
+                                android:maxLines="1" />
 
                             <TextView
                                 android:id="@+id/tx_url_input"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:maxLines="1"
-                                android:ellipsize="end"/>
+                                android:ellipsize="end"
+                                android:maxLines="1" />
 
                         </LinearLayout>
 
@@ -150,17 +154,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:animateLayoutChanges="true"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/btn_emoticon"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+                        android:layout_gravity="bottom"
                         android:layout_margin="12dp"
                         android:alpha="0.6"
-                        android:layout_gravity="bottom"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_round_insert_emoticon_24"
                         app:tint="@android:color/black"
@@ -195,7 +199,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginEnd="12dp"
-                        android:layout_marginRight="12dp"
                         android:alpha="0.6"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_round_photo_camera_24"
@@ -212,11 +215,10 @@
             android:id="@+id/btn_send_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_send_24px"
-            android:layout_gravity="bottom"
             app:backgroundTint="@color/colorPrimary"
             app:elevation="1dp"
             app:fabCustomSize="46dp"
@@ -225,4 +227,25 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_attach"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_chat"
+        tools:layout_editor_absoluteX="12dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_attach"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:padding="12dp" />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

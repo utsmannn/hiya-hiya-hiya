@@ -1,6 +1,5 @@
 package com.utsman.hiyahiyahiya.ui.adapter
 
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.perfomer.blitz.setTimeAgo
 import com.utsman.hiyahiyahiya.R
-import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.row.RowRoom
 import com.utsman.hiyahiyahiya.model.row.RowRoomType
+import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import com.utsman.hiyahiyahiya.utils.click
 import com.utsman.hiyahiyahiya.utils.load
 import kotlinx.android.synthetic.main.item_list_empty.view.*
@@ -23,26 +22,24 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ItemRoomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: RowRoom.RoomItem) = itemView.run {
             img_profile.load(item.imageRoom, isCircle = true)
-            tx_title.text = item.titleRoom + " " + item.localChatStatus.name
+            tx_title.text = item.titleRoom
             tx_subtitle.text = item.subtitleRoom
             tx_date.setTimeAgo(item.lastDate ?: 0L)
+
+            if (item.imageBadge) img_room_badge.visibility = View.VISIBLE
+            else img_room_badge.visibility = View.GONE
+
+            img_send_indicator.setColorFilter(ContextCompat.getColor(context, android.R.color.black), PorterDuff.Mode.MULTIPLY)
 
             when (item.localChatStatus) {
                 LocalChatStatus.NONE -> img_send_indicator.visibility = View.GONE
                 LocalChatStatus.SEND -> {
                     img_send_indicator.visibility = View.VISIBLE
                     img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_done_24))
-                    img_send_indicator.setColorFilter(ContextCompat.getColor(context, android.R.color.black), PorterDuff.Mode.MULTIPLY)
                 }
                 LocalChatStatus.RECEIVED -> {
                     img_send_indicator.visibility = View.VISIBLE
                     img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
-                    img_send_indicator.setColorFilter(ContextCompat.getColor(context, android.R.color.black), PorterDuff.Mode.MULTIPLY)
-                }
-                LocalChatStatus.READ -> {
-                    img_send_indicator.visibility = View.VISIBLE
-                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
-                    img_send_indicator.setColorFilter(ContextCompat.getColor(context, R.color.colorAccent), PorterDuff.Mode.MULTIPLY)
                 }
             }
 

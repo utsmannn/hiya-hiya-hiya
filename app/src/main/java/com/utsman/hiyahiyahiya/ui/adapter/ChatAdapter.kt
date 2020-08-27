@@ -58,6 +58,9 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             RowChatType.OTHER_URL -> ItemChatOtherUrlViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other_url, parent, false)
             )
+            RowChatType.DIVIDER -> ItemChatDivider(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_divider_chat, parent, false)
+            )
             else -> EmptyViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_list_empty, parent, false)
             )
@@ -77,6 +80,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     RowChatType.ME_URL -> (holder as ItemChatMeUrlViewHolder).bind(item)
                     RowChatType.OTHER_IMAGE -> (holder as ItemChatOtherImageViewHolder).bind(item)
                     RowChatType.OTHER_URL -> (holder as ItemChatOtherUrlViewHolder).bind(item)
+                    RowChatType.DIVIDER -> (holder as ItemChatDivider).bind(item)
                     else -> (holder as ItemChatOtherViewHolder).bind(item)
                 }
             }

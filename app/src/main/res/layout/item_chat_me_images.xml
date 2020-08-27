@@ -6,20 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="6dp">
+    android:padding="3dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="@drawable/img_bubble_me"
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
             android:layout_marginLeft="6dp"
             android:layout_marginTop="6dp"
             android:layout_marginRight="6dp"
@@ -58,7 +57,7 @@
             android:paddingRight="6dp">
 
             <TextView
-                android:id="@+id/tx_status_me"
+                android:id="@+id/tx_date_me"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.6"
@@ -73,7 +72,6 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="6dp"
-                android:layout_marginLeft="6dp"
                 android:src="@drawable/ic_baseline_done_all_24" />
 
         </LinearLayout>

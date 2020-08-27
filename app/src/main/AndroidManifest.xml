@@ -56,6 +56,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.CameraResultActivity" />
         <activity android:name=".utils.story_view.StoryPlayerActivity" />
+        <activity android:name=".ui.GalleryActivity" />
     </application>
 
 </manifest>

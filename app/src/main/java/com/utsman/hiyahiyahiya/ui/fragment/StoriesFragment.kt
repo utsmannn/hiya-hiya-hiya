@@ -45,7 +45,7 @@ class StoriesFragment : Fragment() {
             GlobalScope.launch {
                 val stories = it.map { l -> l.toStory(contactRepository, storyRepository) }
                 CoroutineScope(Dispatchers.Main).launch {
-                    if (stories.isEmpty()) {
+                    if (stories.isNullOrEmpty()) {
                         storyAdapter.addStories(listOf(RowStory.Empty("Story is empty")))
                     } else {
                         storyAdapter.addStories(stories)

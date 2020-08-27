@@ -21,7 +21,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RoomsFragment : Fragment() {
-    private val networkMessage: NetworkMessage by network()
     private val roomViewModel: RoomViewModel by viewModel()
     private val roomAdapter: RoomAdapter by inject()
 

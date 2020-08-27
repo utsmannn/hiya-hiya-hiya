@@ -15,10 +15,6 @@ import kotlinx.coroutines.flow.map
 class StoryViewModel(private val contactRepository: ContactRepository, private val storyRepository: StoryRepository) : ViewModel() {
 
     fun stories() = storyRepository.localStories()
-        /*.flowOn(Dispatchers.IO)
-        .map {
-            it.map { l -> l.toStory(contactRepository, storyRepository) }
-        }*/
         .flowOn(Dispatchers.Main)
         .asLiveData(viewModelScope.coroutineContext)
 

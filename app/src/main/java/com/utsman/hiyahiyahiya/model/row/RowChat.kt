@@ -11,7 +11,7 @@ import com.utsman.hiyahiyahiya.utils.logi
 import java.text.SimpleDateFormat
 
 enum class RowChatType {
-    ME, OTHER, EMPTY, ME_IMAGE, ME_URL, ME_ALL, OTHER_IMAGE, OTHER_URL, OTHER_ALL
+    ME, OTHER, EMPTY, ME_IMAGE, ME_URL, ME_ALL, OTHER_IMAGE, OTHER_URL, OTHER_ALL, DIVIDER
 }
 
 sealed class RowChatItem(var rowChatType: RowChatType, var identifier: Long?) {
@@ -30,8 +30,9 @@ sealed class RowChatItem(var rowChatType: RowChatType, var identifier: Long?) {
         @SerializedName("current_user")
         var currentUser: LocalUser? = LocalUser(),
         @SerializedName("local_chat_status")
-        var localChatStatus: LocalChatStatus = LocalChatStatus.SEND
-    ) : RowChatItem(generateType(from, imageAttachment, urlAttachment), time) {
+        var localChatStatus: LocalChatStatus = LocalChatStatus.SEND,
+        var divider: Boolean = false
+    ) : RowChatItem(generateType(from, imageAttachment, urlAttachment, divider), time) {
 
         @SuppressLint("SimpleDateFormat")
         fun stringTime(): String {
@@ -45,18 +46,23 @@ sealed class RowChatItem(var rowChatType: RowChatType, var identifier: Long?) {
     ) : RowChatItem(RowChatType.EMPTY, 0L)
 }
 
-fun generateType(from: String?, imageAttachment: List<ImageAttachment>, urlAttachment: UrlAttachment?): RowChatType {
+fun generateType(from: String?, imageAttachment: List<ImageAttachment>, urlAttachment: UrlAttachment?, divider: Boolean): RowChatType {
     logi("aaaa url attch-> $urlAttachment")
-    return when {
-        (from == UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment == null) -> RowChatType.ME
-        (from == UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment == null) -> RowChatType.ME_IMAGE
-        (from == UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment != null) -> RowChatType.ME_URL
-        (from == UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment != null) -> RowChatType.ME_ALL
+    return when (divider) {
+        true -> RowChatType.DIVIDER
+        else -> {
+            when {
+                (from == UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment == null && !divider) -> RowChatType.ME
+                (from == UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment == null && !divider) -> RowChatType.ME_IMAGE
+                (from == UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment != null && !divider) -> RowChatType.ME_URL
+                (from == UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment != null && !divider) -> RowChatType.ME_ALL
 
-        (from != UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment == null) -> RowChatType.OTHER
-        (from != UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment == null) -> RowChatType.OTHER_IMAGE
-        (from != UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment != null) -> RowChatType.OTHER_URL
-        (from != UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment != null) -> RowChatType.OTHER_ALL
-        else -> RowChatType.EMPTY
+                (from != UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment == null && !divider) -> RowChatType.OTHER
+                (from != UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment == null && !divider) -> RowChatType.OTHER_IMAGE
+                (from != UserPref.getUserId() && imageAttachment.isEmpty() && urlAttachment != null && !divider) -> RowChatType.OTHER_URL
+                (from != UserPref.getUserId() && imageAttachment.isNotEmpty() && urlAttachment != null && !divider) -> RowChatType.OTHER_ALL
+                else -> RowChatType.EMPTY
+            }
+        }
     }
 }

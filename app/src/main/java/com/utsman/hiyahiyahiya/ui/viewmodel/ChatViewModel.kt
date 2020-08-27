@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.utsman.hiyahiyahiya.data.repository.ChatRepository
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
 import com.utsman.hiyahiyahiya.model.utils.toChat
+import com.utsman.hiyahiyahiya.utils.DividerCalculator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 

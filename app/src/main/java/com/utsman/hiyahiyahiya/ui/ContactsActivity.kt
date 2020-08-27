@@ -17,7 +17,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ContactsActivity : AppCompatActivity() {
-    private val viewModel: ContactViewModel by viewModel()
+    private val contactViewModel: ContactViewModel by viewModel()
     private val authViewModel: AuthViewModel by viewModel()
     private val contactAdapter: ContactAdapter by inject()
 
@@ -48,7 +48,7 @@ class ContactsActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.contacts.observe(this, Observer {
+        contactViewModel.contacts.observe(this, Observer {
             if (it.isEmpty()) contactAdapter.addContact(listOf(RowContact.Empty(text = "Contact empty")))
             else contactAdapter.addContact(it)
         })

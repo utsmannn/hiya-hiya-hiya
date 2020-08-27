@@ -1,28 +1,30 @@
 package com.utsman.hiyahiyahiya.ui
 
-import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.utsman.hiyahiyahiya.R
+import com.utsman.hiyahiyahiya.data.ConstantValue
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.di.network
-import com.utsman.hiyahiyahiya.network.NetworkMessage
-import com.utsman.hiyahiyahiya.model.types.TypeMessage
+import com.utsman.hiyahiyahiya.model.features.UrlAttachment
 import com.utsman.hiyahiyahiya.model.row.RowChatItem
 import com.utsman.hiyahiyahiya.model.row.RowRoom
-import com.utsman.hiyahiyahiya.model.features.UrlAttachment
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.types.TypeCamera
+import com.utsman.hiyahiyahiya.model.types.TypeMessage
 import com.utsman.hiyahiyahiya.model.utils.*
+import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.ui.adapter.ChatAdapter
+import com.utsman.hiyahiyahiya.ui.adapter.chat_viewholder.AttachmentAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.ChatViewModel
 import com.utsman.hiyahiyahiya.ui.viewmodel.RoomViewModel
 import com.utsman.hiyahiyahiya.utils.*
@@ -31,12 +33,14 @@ import com.utsman.hiyahiyahiya.utils.url_utils.UrlUtil
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.activity_chat_room.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
     private val chatAdapter: ChatAdapter by inject()
+    private val attachAdapter: AttachmentAdapter by inject()
     private val localUserDb: LocalUserDatabase by inject()
     private val chatRoomViewModel: ChatViewModel by viewModel()
     private val roomViewModel: RoomViewModel by viewModel()
@@ -47,17 +51,18 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
 
     private var mUrlAttachment: UrlAttachment? = null
 
+    private val room by lazy { intent.getParcelableExtra<RowRoom.RoomItem>("room") }
+    private val to by lazy { intent.getStringExtra("to") }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_room)
         setKeyboardVisibilityListener(parent_layout)
 
         showCardUrl(false)
-        val room = intent.getParcelableExtra<RowRoom.RoomItem>("room")
         registerBroadcast(room)
         setupToolbar(room)
 
-        val to = intent.getStringExtra("to")
         if (room != null) {
             setupView(room, to)
         }
@@ -112,19 +117,24 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             setHasFixedSize(true)
         }
 
+
         chatRoomViewModel.chats(roomId = roomItem.id).observe(this, Observer {
-            if (it.isEmpty()) {
+            if (it.isNullOrEmpty()) {
                 chatAdapter.addChat(listOf(RowChatItem.Empty("chat is empty")))
             } else {
-                chatSize = it.size
-                chatAdapter.addChat(it)
-                rv_chat.scrollToPosition(it.lastIndex)
+                val newList = DividerCalculator.calculateDividerList(it)
+                logi("uhuuuuyyy -> ${newList.first().rowChatType.name} --> is divider ${newList.first().divider}")
+                chatSize = newList.size
+                chatAdapter.addChat(newList)
+                rv_chat.scrollToPosition(newList.lastIndex)
                 mUrlAttachment = null
                 setupRecyclerViewScrollListener()
             }
+
         })
 
         setupInputText(roomItem, to)
+        setupAttachView(roomItem, to)
 
         in_chat_message.observerHeightChanges(this) {
             if (isReachBottom) rv_chat.scrollToPosition(chatSize - 1)
@@ -143,10 +153,51 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                 putExtra("intent_type", TypeCamera.ATTACHMENT.name)
             }
         }
+
+        btn_attach.click {
+            showAttachLayout(!isAttachIsShown())
+        }
     }
+
+    private fun setupAttachView(roomItem: RowRoom.RoomItem, to: String?) {
+        val gridLayoutManager = GridLayoutManager(this, 3)
+        rv_attach.apply {
+            layoutManager = gridLayoutManager
+            adapter = attachAdapter
+        }
+
+        attachAdapter.addItems(ConstantValue.itemAttachments)
+        attachAdapter.onAttachClick {
+            if (isAttachIsShown()) showAttachLayout(false)
+            when (it.id) {
+                "camera" -> {
+                    intentTo(CameraActivity::class.java) {
+                        putExtra("room", roomItem)
+                        putExtra("to", to)
+                        putExtra("intent_type", TypeCamera.ATTACHMENT.name)
+                    }
+                }
+                "gallery" -> {
+                    intentTo(GalleryActivity::class.java) {
+                        putExtra("room", roomItem)
+                        putExtra("to", to)
+                        putExtra("intent_type", TypeCamera.ATTACHMENT.name)
+                    }
+                }
+                "location" -> {
+
+                }
+
+            }
+        }
+    }
+
+    private fun isAttachIsShown() = card_attach.visibility == View.VISIBLE
 
     private fun setupInputText(roomItem: RowRoom.RoomItem, to: String?) {
         in_chat_message.debounce(500) {
+            if (isAttachIsShown()) showAttachLayout(false)
+
             setupTyping(it, roomItem, to)
             if (it.isNotEmpty()) {
                 btn_photo.goneAnimation()
@@ -170,6 +221,8 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                 btn_emoticon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_keyboard_24))
             }
         }
+
+
     }
 
     private fun setupTyping(it: String, roomItem: RowRoom.RoomItem, to: String?) {
@@ -224,6 +277,28 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
         if (mUrlAttachment?.image == null) img_url_input.visibility = View.GONE
     }
 
+    private fun showAttachLayout(show: Boolean) {
+        if (show) {
+            card_attach.animate()
+                .alpha(1f)
+                .translationY(1f)
+                .withStartAction {
+                    card_attach.visibility = View.VISIBLE
+                }
+                .setDuration(200)
+                .start()
+        } else {
+            card_attach.animate()
+                .alpha(0f)
+                .translationY(100f)
+                .withEndAction {
+                    card_attach.visibility = View.GONE
+                }
+                .setDuration(200)
+                .start()
+        }
+    }
+
     private fun showCardUrl(show: Boolean) {
         if (show) {
             card_url_input.animate()
@@ -254,7 +329,9 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
         val messageString = in_chat_message.text.toString()
 
         roomItem.subtitleRoom = messageString
+        roomItem.lastDate = System.currentTimeMillis()
         roomItem.localChatStatus = LocalChatStatus.SEND
+        roomItem.imageBadge = false
 
         GlobalScope.launch {
             val currentUser = localUserDb.localUserDao().localUser(UserPref.getUserId())
@@ -319,8 +396,6 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
     private fun normallyRecyclerview() {
         if (chatSize > 1) {
             if (isReachBottom) rv_chat.scrollToPosition(chatSize - 1)
-
-            //if (isReachBottom) rv_chat.scrollToPosition(chatSize - 1)
         }
     }
 }

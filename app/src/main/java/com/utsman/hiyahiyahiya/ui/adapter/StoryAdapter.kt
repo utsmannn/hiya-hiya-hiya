@@ -81,7 +81,7 @@ class StoryAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             RowStoryType.OTHER -> StoryViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_story, parent, false)
             )
-            else -> StoryViewHolder(
+            else -> EmptyStoryViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.item_list_empty, parent, false)
             )
         }

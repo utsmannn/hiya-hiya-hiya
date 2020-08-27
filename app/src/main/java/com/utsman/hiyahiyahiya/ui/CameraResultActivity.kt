@@ -54,12 +54,10 @@ class CameraResultActivity : AppCompatActivity() {
 
         val file = File(imagePath)
         Picasso.get().load(file).into(img_result)
-        toast(intentType)
 
         btn_send_message.click {
             progress_circular.visibility = View.VISIBLE
             container_input.alpha = 0.3f
-            in_chat_message.setText("")
 
             val bytes = file.readBytes()
 
@@ -75,8 +73,8 @@ class CameraResultActivity : AppCompatActivity() {
 
                                     if (roomItem != null) {
                                         val messageString = in_chat_message.text.toString()
-                                        roomItem!!.subtitleRoom = messageString
-                                        roomItem!!.localChatStatus = LocalChatStatus.SEND
+                                        roomItem?.subtitleRoom = messageString
+                                        roomItem?.localChatStatus = LocalChatStatus.SEND
                                         sendMessage(messageString, roomItem, imageAttachment)
                                     } else {
                                         runOnUiThread {
@@ -158,6 +156,9 @@ class CameraResultActivity : AppCompatActivity() {
     private suspend fun sendMessage(messageString: String, room: RowRoom.RoomItem, imageAttachment: ImageAttachment) {
         val currentUser = localUserDb.localUserDao().localUser(UserPref.getUserId())
 
+        room.lastDate = System.currentTimeMillis()
+        room.imageBadge = true
+
         val chat = chatItem {
             this.id = UUID.randomUUID().toString()
             this.from = UserPref.getUserId()
@@ -181,6 +182,7 @@ class CameraResultActivity : AppCompatActivity() {
 
         network.send(this, messageBody, object : NetworkMessage.MessageCallback {
             override fun onSuccess() {
+                in_chat_message.setText("")
                 progress_circular.visibility = View.GONE
                 setResult(Activity.RESULT_OK)
                 finish()

@@ -59,8 +59,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        setupToolbar()
-        setupFragment()
+        startPermission {
+            setupToolbar()
+            setupFragment()
+        }
     }
 
     private fun setupToolbar() {

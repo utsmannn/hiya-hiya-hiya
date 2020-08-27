@@ -75,18 +75,7 @@ class CameraFragment : Fragment() {
             intentType = getString("intent_type")
         }
 
-        val listPermission = listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
-        )
-
-        requireActivity().withPermissions(listPermission) { _, deniedList ->
-            if (deniedList.isEmpty()) {
-                setupView()
-            }
-        }
+        setupView()
     }
 
     fun isFromPager(fromPager: Boolean) {
@@ -176,7 +165,6 @@ class CameraFragment : Fragment() {
     }
 
     private fun intentToResult(path: String) {
-
         val intent = Intent(requireContext(), CameraResultActivity::class.java).apply {
             putExtra("image_path", path)
             putExtra("room", room)

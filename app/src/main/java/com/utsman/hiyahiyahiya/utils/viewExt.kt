@@ -1,5 +1,6 @@
 package com.utsman.hiyahiyahiya.utils
 
+import android.Manifest
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
@@ -181,4 +182,19 @@ fun Activity.makeStatusBarTransparent(pushPadding: Boolean = true) {
 
 fun Int.dp(context: Context): Int {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics).toInt()
+}
+
+fun Activity.startPermission(accept: () -> Unit) {
+    val listPermission = listOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
+    )
+
+    withPermissions(listPermission) { _, deniedList ->
+        if (deniedList.isEmpty()) {
+            accept.invoke()
+        }
+    }
 }

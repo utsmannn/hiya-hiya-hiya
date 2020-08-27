@@ -5,10 +5,9 @@
     android:id="@+id/layout_other_chat"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginEnd="50dp"
-    android:layout_marginRight="50dp"
-    android:padding="6dp">
+    android:orientation="vertical"
+    android:padding="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,13 +17,13 @@
         tools:ignore="UselessParent">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_url_other"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
-            android:id="@+id/card_url_other"
             android:layout_marginTop="6dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:layout_marginRight="6dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="@color/cardUrl"
             app:cardElevation="0dp">
 
@@ -38,8 +37,8 @@
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:src="@color/colorAccent"
                     android:scaleType="centerCrop"
+                    android:src="@color/colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintStart_toStartOf="parent" />
@@ -71,8 +70,8 @@
                         android:id="@+id/tx_url_other"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
                         android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/app_name" />
 
                 </LinearLayout>
@@ -92,7 +91,7 @@
             tools:text="@string/lorem_ipsum" />
 
         <TextView
-            android:id="@+id/tx_status_other"
+            android:id="@+id/tx_date_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
