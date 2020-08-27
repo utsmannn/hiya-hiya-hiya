@@ -21,6 +21,9 @@ fun generateIdRoom(vararg ids: String) = ids.toList().sorted().toString()
     .trim()
     .replace(" ", "")
 
+fun generateIdStory(userId: String) = "story-of-$userId"
+fun generateIdImageBB(userId: String) = "image-bb-of-$userId-${System.currentTimeMillis()}"
+
 fun Activity.withPermissions(listPermission: List<String>, action: (grantedList: List<String>, deniedList: List<String>) -> Unit) {
     Dexter.withActivity(this)
         .withPermissions(listPermission)
@@ -42,4 +45,3 @@ fun Activity.withPermissions(listPermission: List<String>, action: (grantedList:
         })
         .check()
 }
-

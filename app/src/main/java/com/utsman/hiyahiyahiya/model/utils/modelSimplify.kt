@@ -1,18 +1,30 @@
 package com.utsman.hiyahiyahiya.model.utils
 
+import com.utsman.hiyahiyahiya.database.entity.LocalImageBB
+import com.utsman.hiyahiyahiya.database.entity.LocalStory
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
+import com.utsman.hiyahiyahiya.model.body.MessageBody
+import com.utsman.hiyahiyahiya.model.body.MessageStatusBody
+import com.utsman.hiyahiyahiya.model.body.StoryBody
+import com.utsman.hiyahiyahiya.model.body.TypingBody
 import com.utsman.hiyahiyahiya.model.features.*
 import com.utsman.hiyahiyahiya.model.row.RowChatItem
 import com.utsman.hiyahiyahiya.model.row.RowRoom
+import com.utsman.hiyahiyahiya.model.row.RowStory
 
-fun messageBody(msg: MessageBody.() -> Unit) = MessageBody().apply(msg)
+fun messageBody(body: MessageBody.() -> Unit) = MessageBody().apply(body)
 fun messageStatusBody(body: MessageStatusBody.() -> Unit) = MessageStatusBody().apply(body)
-fun typingBody(typingBody: TypingBody.() -> Unit) = TypingBody().apply(typingBody)
+fun typingBody(body: TypingBody.() -> Unit) = TypingBody().apply(body)
+fun storyBody(body: StoryBody.() -> Unit) = StoryBody().apply(body)
 
 fun localUser(u: LocalUser.() -> Unit) = LocalUser().apply(u)
+fun localStory(story: LocalStory.() -> Unit) = LocalStory().apply(story)
+fun localImageBB(imageBB: LocalImageBB.() -> Unit) = LocalImageBB().apply(imageBB)
+
 fun chatRoom(roomItem: RowRoom.RoomItem.() -> Unit) = RowRoom.RoomItem().apply(roomItem)
 fun chatItem(item: RowChatItem.ChatItem.() -> Unit) = RowChatItem.ChatItem().apply(item)
 fun photo(photoLocal: PhotoLocal.() -> Unit) = PhotoLocal().apply(photoLocal)
+fun story(story: RowStory.StoryItem.() -> Unit) = RowStory.StoryItem().apply(story)
 
 fun imageAttachment(attachment: ImageAttachment.() -> Unit) = ImageAttachment().apply(attachment)
 fun urlAttachment(attachment: UrlAttachment.() -> Unit) = UrlAttachment().apply(attachment)

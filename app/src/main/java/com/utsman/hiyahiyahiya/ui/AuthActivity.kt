@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
-import com.utsman.hiyahiyahiya.viewmodel.AuthViewModel
+import com.utsman.hiyahiyahiya.ui.viewmodel.AuthViewModel
 import com.utsman.hiyahiyahiya.R
 import kotlinx.android.synthetic.main.activity_auth.*
 import org.koin.android.ext.android.inject

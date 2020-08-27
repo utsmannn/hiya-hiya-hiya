@@ -20,8 +20,10 @@ sealed class RowRoom(val rowRoomType: RowRoomType) {
         var subtitleRoom: String? = "",
         var imageRoom: String? = "",
         @SerializedName("local_chat_status")
-        var localChatStatus: LocalChatStatus = LocalChatStatus.NONE
-    ): Parcelable, RowRoom(RowRoomType.ITEM)
+        var localChatStatus: LocalChatStatus = LocalChatStatus.NONE,
+        @SerializedName("image_badge")
+        var imageBadge: Boolean = false
+    ) : Parcelable, RowRoom(RowRoomType.ITEM)
 
     data class Empty(
         var text: String = "Empty"

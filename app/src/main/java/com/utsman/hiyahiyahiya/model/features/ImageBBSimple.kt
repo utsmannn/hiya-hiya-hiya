@@ -6,15 +6,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ImageBBSimple(
-    val thumb: String?,
-    val url: String?,
+    val thumb: String? = null,
+    val url: String? = null,
     @SerializedName("url_large")
-    val urlLarge: String?
+    val urlLarge: String? = null
 ): Parcelable
-
-fun ImageBB.toImageBBSimple(): ImageBBSimple {
-    val thumb = data?.thumb?.url
-    val url = data?.medium?.url
-    val urlLarge = data?.image?.url
-    return ImageBBSimple(thumb, url, urlLarge)
-}

@@ -7,6 +7,6 @@ val adapterModule = module {
     single { ContactAdapter() }
     factory { ChatAdapter() }
     factory { RoomAdapter() }
-    factory { PhotoAdapter() }
     factory { PhotosPagedAdapter() }
+    factory { StoryAdapter() }
 }

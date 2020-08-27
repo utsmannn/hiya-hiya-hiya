@@ -11,7 +11,6 @@ import com.squareup.picasso.Picasso
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.model.features.PhotoLocal
 import com.utsman.hiyahiyahiya.utils.click
-import com.utsman.hiyahiyahiya.utils.toast
 import java.io.File
 
 class PhotosPagedAdapter : PagedListAdapter<PhotoLocal, PhotosPagedAdapter.PhotoViewHolder>(diffCallback) {
@@ -23,10 +22,7 @@ class PhotosPagedAdapter : PagedListAdapter<PhotoLocal, PhotosPagedAdapter.Photo
             Picasso.get().load(file).resize(300, 0).into(imgPhoto)
 
             click {
-                if (it.alpha == 1f) {
-                    context?.toast("click -> ${photoLocal.uri}")
-                }
-                //onPhotoClick?.invoke(uri)
+                onPhotoClick?.invoke(photoLocal)
             }
         }
     }
@@ -44,6 +40,12 @@ class PhotosPagedAdapter : PagedListAdapter<PhotoLocal, PhotosPagedAdapter.Photo
                 newConcert: PhotoLocal
             ) = oldConcert == newConcert
         }
+    }
+
+    private var onPhotoClick: ((PhotoLocal) -> Unit)? = null
+
+    fun onClick(onPhotoClick: ((PhotoLocal) -> Unit)? = null) {
+        this.onPhotoClick = onPhotoClick
     }
 
     private var type = 0

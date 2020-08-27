@@ -49,7 +49,13 @@ class ItemChatMeImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
         tx_message_me.text = itemChatItem.message
         tx_status_me.text = itemChatItem.stringTime()
-        Picasso.get().load(itemChatItem.imageAttachment.first().imageBBSimple?.url).resize(300, 0).into(img_message_me)
+        val url = if (itemChatItem.imageAttachment.first().imageBBSimple?.url != null) {
+            itemChatItem.imageAttachment.first().imageBBSimple?.url
+        } else {
+            itemChatItem.imageAttachment.first().imageBBSimple?.urlLarge
+        }
+
+        Picasso.get().load(url).resize(300, 0).into(img_message_me)
 
         if (itemChatItem.message?.isEmpty() == true) tx_message_me.visibility = View.GONE
 
@@ -118,7 +124,13 @@ class ItemChatOtherImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(itemChatItem: RowChatItem.ChatItem) = itemView.run {
         tx_message_other.text = itemChatItem.message
         tx_status_other.text = itemChatItem.stringTime()
-        Picasso.get().load(itemChatItem.imageAttachment.first().imageBBSimple?.url).resize(300, 0).into(img_message_other)
+        val url = if (itemChatItem.imageAttachment.first().imageBBSimple?.url != null) {
+            itemChatItem.imageAttachment.first().imageBBSimple?.url
+        } else {
+            itemChatItem.imageAttachment.first().imageBBSimple?.urlLarge
+        }
+
+        Picasso.get().load(url).resize(300, 0).into(img_message_other)
 
         if (itemChatItem.message?.isEmpty() == true) tx_message_other.visibility = View.GONE
 

@@ -4,8 +4,10 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -16,7 +18,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
-import com.utsman.hiyahiyahiya.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+
 
 private fun View.clicks(): Flow<Unit> = callbackFlow {
     this@clicks.setOnClickListener {
@@ -175,4 +177,8 @@ fun Activity.makeStatusBarTransparent(pushPadding: Boolean = true) {
             statusBarColor = Color.TRANSPARENT
         }
     }
+}
+
+fun Int.dp(context: Context): Int {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics).toInt()
 }

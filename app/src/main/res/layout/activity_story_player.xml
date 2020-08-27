@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:padding="4dp">
+
+        <com.utsman.hiyahiyahiya.utils.story_view.StoryPlayerProgressView
+            android:id="@+id/progressBarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:gapBetweenProgressBar="0.5dp"
+            app:singleStoryDisplayTime="4000"
+            app:progressBarHeight="1dp"
+            app:progressBarPrimaryColor="#ffffff"
+            app:progressBarSecondaryColor="#3effffff" />
+
+        <TextView
+            android:id="@+id/storyUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progressBarView"
+            android:layout_marginStart="8dp"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="8dp" />
+
+        <TextView
+            android:id="@+id/storyTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/storyUserName"
+            android:layout_marginStart="8dp"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:layout_marginLeft="8dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/storyImage"
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true" />
+
+</LinearLayout>

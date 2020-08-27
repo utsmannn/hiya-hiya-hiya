@@ -14,7 +14,7 @@ enum class RowChatType {
     ME, OTHER, EMPTY, ME_IMAGE, ME_URL, ME_ALL, OTHER_IMAGE, OTHER_URL, OTHER_ALL
 }
 
-sealed class RowChatItem(var rowChatType: RowChatType) {
+sealed class RowChatItem(var rowChatType: RowChatType, var identifier: Long?) {
     data class ChatItem(
         var id: String = "",
         var message: String? = "",
@@ -31,7 +31,7 @@ sealed class RowChatItem(var rowChatType: RowChatType) {
         var currentUser: LocalUser? = LocalUser(),
         @SerializedName("local_chat_status")
         var localChatStatus: LocalChatStatus = LocalChatStatus.SEND
-    ) : RowChatItem(generateType(from, imageAttachment, urlAttachment)) {
+    ) : RowChatItem(generateType(from, imageAttachment, urlAttachment), time) {
 
         @SuppressLint("SimpleDateFormat")
         fun stringTime(): String {
@@ -42,7 +42,7 @@ sealed class RowChatItem(var rowChatType: RowChatType) {
 
     data class Empty(
         var text: String = "Empty"
-    ) : RowChatItem(RowChatType.EMPTY)
+    ) : RowChatItem(RowChatType.EMPTY, 0L)
 }
 
 fun generateType(from: String?, imageAttachment: List<ImageAttachment>, urlAttachment: UrlAttachment?): RowChatType {

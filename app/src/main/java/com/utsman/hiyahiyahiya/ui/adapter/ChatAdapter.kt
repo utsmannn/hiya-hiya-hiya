@@ -11,7 +11,7 @@ import com.utsman.hiyahiyahiya.ui.adapter.chat_viewholder.*
 
 class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class ContactDiffCallback(
+    inner class ChatDiffCallback(
         private val oldList: List<RowChatItem>,
         private val newList: List<RowChatItem>
     ) : DiffUtil.Callback() {
@@ -31,7 +31,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val chatList: MutableList<RowChatItem> = mutableListOf()
 
     fun addChat(chats: List<RowChatItem>) = apply {
-        val diffCallback = ContactDiffCallback(chatList, chats)
+        val diffCallback = ChatDiffCallback(chatList, chats)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         chatList.clear()
         chatList.addAll(chats)
@@ -66,6 +66,7 @@ class ChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int = chatList.size
     override fun getItemViewType(position: Int): Int = chatList[position].rowChatType.ordinal
+    override fun getItemId(position: Int): Long = chatList[position].identifier ?: 0L
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = chatList[position]) {

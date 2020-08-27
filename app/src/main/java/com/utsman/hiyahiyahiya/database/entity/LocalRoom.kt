@@ -19,7 +19,9 @@ data class LocalRoom(
     var subtitleRoom: String? = "",
     var imageRoom: String? = "",
     @SerializedName("local_chat_status")
-    var localChatStatus: LocalChatStatus = LocalChatStatus.NONE
+    var localChatStatus: LocalChatStatus = LocalChatStatus.NONE,
+    @SerializedName("image_badge")
+    var imageBadge: Boolean = false
 ) {
     class Converter {
         val gson = Gson()

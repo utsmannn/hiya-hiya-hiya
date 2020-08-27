@@ -17,16 +17,6 @@ class PhotosViewModel(private val photosRepository: PhotosRepository) : ViewMode
 
     var data: LiveData<PagedList<PhotoLocal>> = MutableLiveData()
 
-    suspend fun allPhotos() = photosRepository.allImagesPath().take(100)
-
-    suspend fun allPhotosReorder() = photosRepository
-        .allImagesFlowReorder()?.map { r ->
-            logi("dateeee -> ${r.first().date.toLong()*1000}")
-            r.map { p -> RowImage.Item1(p.uri) }
-        }
-
-    fun getAllPhotos() = photosRepository.allPhotosReorder()
-
     private fun configPaged(): PagedList.Config = PagedList.Config.Builder()
         .setPageSize(20)
         .setEnablePlaceholders(true)

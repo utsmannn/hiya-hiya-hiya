@@ -4,26 +4,23 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.utsman.hiyahiyahiya.data.UserPref
-import com.utsman.hiyahiyahiya.database.LocalChatDatabase
-import com.utsman.hiyahiyahiya.database.LocalRoomDatabase
-import com.utsman.hiyahiyahiya.database.LocalUserDatabase
+import com.utsman.hiyahiyahiya.database.*
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
+import com.utsman.hiyahiyahiya.database.entity.LocalStory
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
 import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.model.types.TypeMessage
-import com.utsman.hiyahiyahiya.model.features.MessageStatusBody
-import com.utsman.hiyahiyahiya.model.features.TypingBody
+import com.utsman.hiyahiyahiya.model.body.MessageStatusBody
+import com.utsman.hiyahiyahiya.model.body.StoryBody
+import com.utsman.hiyahiyahiya.model.body.TypingBody
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
-import com.utsman.hiyahiyahiya.model.utils.chatRoom
-import com.utsman.hiyahiyahiya.model.utils.messageBody
-import com.utsman.hiyahiyahiya.model.utils.messageStatusBody
-import com.utsman.hiyahiyahiya.model.utils.toLocalRoom
+import com.utsman.hiyahiyahiya.model.utils.*
 import com.utsman.hiyahiyahiya.utils.Broadcast
+import com.utsman.hiyahiyahiya.utils.generateIdImageBB
+import com.utsman.hiyahiyahiya.utils.generateIdStory
 import com.utsman.hiyahiyahiya.utils.logi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import java.util.*
 
@@ -32,6 +29,9 @@ class FcmServices : FirebaseMessagingService() {
     private val localUserDb: LocalUserDatabase by inject()
     private val localChatDb: LocalChatDatabase by inject()
     private val localRoomDb: LocalRoomDatabase by inject()
+    private val localStoryDatabase: LocalStoryDatabase by inject()
+    private val localImageBBDatabase: LocalImageBBDatabase by inject()
+
     private val network: NetworkMessage by network()
 
     override fun onMessageReceived(remote: RemoteMessage) {
@@ -136,8 +136,43 @@ class FcmServices : FirebaseMessagingService() {
                 val broadcastKey = "typing_${payloadTyping.roomId}"
                 Broadcast.with(GlobalScope).post(broadcastKey)
             }
-        }
+            TypeMessage.STORY -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val payloadStory = gson.fromJson(payloadString, StoryBody::class.java)
+                    val userId = payloadStory.userId
+                    val localStory = localStoryDatabase.localStoryDao().localStoryUser(userId)
 
+                    val localImageBBId = generateIdImageBB(payloadStory.userId)
+
+                    val localImageBB = localImageBB {
+                        this.id = localImageBBId
+                        this.time = payloadStory.time
+                        this.imageBBSimple = payloadStory.imageBB
+                    }
+
+                    logi("local image bb --> $localImageBB")
+                    localImageBBDatabase.localImageBBDao().insert(localImageBB)
+
+                    logi("user id from --> $userId")
+                    logi("local story found -> $localStory")
+                    if (localStory != null) {
+                        localStory.localImageBBIds = localStory.localImageBBIds.toMutableList().apply { add(localImageBBId) }
+                        localStoryDatabase.localStoryDao().insert(localStory)
+                    } else {
+                        val newLocalStory = localStory {
+                            this.id = generateIdStory(userId)
+                            this.time = payloadStory.time
+                            this.userId = userId
+                            this.localImageBBIds = listOf(localImageBBId)
+                        }
+
+                        localStoryDatabase.localStoryDao().insert(newLocalStory)
+                    }
+
+                    logi("story incoming ---> $payloadStory")
+                }
+            }
+        }
 
         logi("message type is -->> $type ")
     }

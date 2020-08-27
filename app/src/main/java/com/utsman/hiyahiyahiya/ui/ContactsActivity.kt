@@ -11,7 +11,7 @@ import com.utsman.hiyahiyahiya.ui.adapter.ContactAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.ContactViewModel
 import com.utsman.hiyahiyahiya.utils.generateIdRoom
 import com.utsman.hiyahiyahiya.utils.intentTo
-import com.utsman.hiyahiyahiya.viewmodel.AuthViewModel
+import com.utsman.hiyahiyahiya.ui.viewmodel.AuthViewModel
 import kotlinx.android.synthetic.main.activity_contacts.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

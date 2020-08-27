@@ -20,6 +20,7 @@ import com.utsman.hiyahiyahiya.model.row.RowChatItem
 import com.utsman.hiyahiyahiya.model.row.RowRoom
 import com.utsman.hiyahiyahiya.model.features.UrlAttachment
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
+import com.utsman.hiyahiyahiya.model.types.TypeCamera
 import com.utsman.hiyahiyahiya.model.utils.*
 import com.utsman.hiyahiyahiya.ui.adapter.ChatAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.ChatViewModel
@@ -118,8 +119,8 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                 chatSize = it.size
                 chatAdapter.addChat(it)
                 rv_chat.scrollToPosition(it.lastIndex)
+                mUrlAttachment = null
                 setupRecyclerViewScrollListener()
-                isReachBottom = true
             }
         })
 
@@ -136,78 +137,23 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
         }
 
         btn_photo.click {
-            val listPermission = listOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
-            )
-            withPermissions(listPermission) { _, deniedList ->
-                if (deniedList.isEmpty()) {
-                    intentTo(PhotosActivity::class.java) {
-                        putExtra("room", roomItem)
-                        putExtra("to", to)
-                    }
-
-                }
+            intentTo(CameraActivity::class.java) {
+                putExtra("room", roomItem)
+                putExtra("to", to)
+                putExtra("intent_type", TypeCamera.ATTACHMENT.name)
             }
         }
     }
 
     private fun setupInputText(roomItem: RowRoom.RoomItem, to: String?) {
-        in_chat_message.debounce(800) {
+        in_chat_message.debounce(500) {
+            setupTyping(it, roomItem, to)
             if (it.isNotEmpty()) {
                 btn_photo.goneAnimation()
                 btn_attach.goneAnimation()
             } else {
                 btn_photo.visibleAnimation(0.6f)
                 btn_attach.visibleAnimation(0.6f)
-            }
-
-            val isUrl = UrlUtil.isUrl(it)
-            CoroutineScope(Dispatchers.IO).launch {
-                logi("is url -------> $isUrl")
-                if (isUrl) {
-                    val urlValid = UrlUtil.extractUrl(it)
-                    val url = UrlFetcher.getThumbnail(urlValid)
-                    logi("url issssssss --------> $url")
-                    logi("url validd -------> $urlValid")
-                    if (url != null) {
-                        runOnUiThread {
-                            showCardUrl(isUrl)
-                            mUrlAttachment = urlAttachment {
-                                this.image = url.image
-                                this.title = url.title
-                                this.subtitle = url.subtitle
-                                this.url = url.url
-                            }
-
-                            logi("aaaaa -> $mUrlAttachment")
-                            setupViewCardUrl()
-                        }
-                    }
-
-                }
-
-                val typingBody = typingBody {
-                    this.ownerId = UserPref.getUserId()
-                    this.roomId = roomItem.id
-                }
-
-                val messageBody = messageBody {
-                    this.fromMessage = UserPref.getUserId()
-                    this.toMessage = to
-                    this.typeMessage = TypeMessage.TYPING
-                    this.payload = typingBody
-                }
-
-                network.send(messageBody, object : NetworkMessage.MessageCallback {
-                    override fun onSuccess() {
-                    }
-
-                    override fun onFailed(message: String?) {
-                    }
-                })
             }
         }
 
@@ -222,6 +168,49 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             } else {
                 emojiPopup.toggle()
                 btn_emoticon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_keyboard_24))
+            }
+        }
+    }
+
+    private fun setupTyping(it: String, roomItem: RowRoom.RoomItem, to: String?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val typingBody = typingBody {
+                this.ownerId = UserPref.getUserId()
+                this.roomId = roomItem.id
+            }
+
+            val messageBody = messageBody {
+                this.fromMessage = UserPref.getUserId()
+                this.toMessage = to
+                this.typeMessage = TypeMessage.TYPING
+                this.payload = typingBody
+            }
+
+            network.send(messageBody, object : NetworkMessage.MessageCallback {
+                override fun onSuccess() {
+                }
+
+                override fun onFailed(message: String?) {
+                }
+            })
+
+
+            val isUrl = UrlUtil.isUrl(it)
+            if (isUrl) {
+                val urlValid = UrlUtil.extractUrl(it)
+                val url = UrlFetcher.getThumbnail(urlValid)
+                if (url != null) {
+                    runOnUiThread {
+                        showCardUrl(isUrl)
+                        mUrlAttachment = urlAttachment {
+                            this.image = url.image
+                            this.title = url.title
+                            this.subtitle = url.subtitle
+                            this.url = url.url
+                        }
+                        setupViewCardUrl()
+                    }
+                }
             }
         }
     }
@@ -284,10 +273,9 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                 }
             }
 
-            logi("dfslkgntjwer nrwgn ------> $mUrlAttachment")
-
-            chatRoomViewModel.insert(chat.toLocalChat())
             roomViewModel.insert(roomItem.toLocalRoom())
+            chatRoomViewModel.insert(chat.toLocalChat())
+            mUrlAttachment = null
 
             val messageBody = messageBody {
                 this.fromMessage = chat.from

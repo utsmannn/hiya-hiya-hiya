@@ -24,19 +24,23 @@ class HiyaHiyaHiyaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        FirebaseMessaging.getInstance().subscribeToTopic(ConstantValue.topic)
+        FirebaseMessaging.getInstance().apply {
+            subscribeToTopic(ConstantValue.topicRegister)
+            subscribeToTopic(ConstantValue.topicStory)
+        }
         EmojiManager.install(GoogleEmojiProvider())
         startKoin {
             androidContext(this@HiyaHiyaHiyaApplication)
             modules(
-                authModule,
+                auth,
                 networkModule,
                 dbModule,
-                contactModule,
+                contact,
                 adapterModule,
-                roomModule,
-                chatModule,
-                photos
+                room,
+                chat,
+                photos,
+                story
             )
         }
     }

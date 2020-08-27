@@ -1,57 +1,99 @@
-package com.utsman.hiyahiyahiya.ui
+package com.utsman.hiyahiyahiya.ui.fragment
 
+import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.inlineactivityresult.startActivityForResult
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.model.row.RowRoom
+import com.utsman.hiyahiyahiya.ui.CameraResultActivity
 import com.utsman.hiyahiyahiya.ui.adapter.PhotosPagedAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.PhotosViewModel
+import com.utsman.hiyahiyahiya.utils.Broadcast
 import com.utsman.hiyahiyahiya.utils.bottom_sheet.BottomSheetBehaviorRecyclerManager
 import com.utsman.hiyahiyahiya.utils.bottom_sheet.BottomSheetBehaviorRv
 import com.utsman.hiyahiyahiya.utils.click
-import com.utsman.hiyahiyahiya.utils.intentTo
 import com.utsman.hiyahiyahiya.utils.saveImage
-import com.utsman.hiyahiyahiya.utils.toast
-import kotlinx.android.synthetic.main.activity_photos.*
+import com.utsman.hiyahiyahiya.utils.withPermissions
+import kotlinx.android.synthetic.main.fragment_camera.*
 import kotlinx.android.synthetic.main.bottom_sheet_photos.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-class PhotosActivity : AppCompatActivity() {
+class CameraFragment : Fragment() {
 
     private val photosViewModel: PhotosViewModel by viewModel()
 
     private val photoAdapter1: PhotosPagedAdapter by inject()
     private val photoAdapter2: PhotosPagedAdapter by inject()
 
-    private val FRONT_CAMERA = 1
-    private val BACK_CAMERA = 0
-    private var flashOn = true
+    private var room: RowRoom.RoomItem? = null
+    private var toMember: String? = null
+    private var intentType: String? = null
 
-    private val liveCameraFacing: MutableLiveData<Int> = MutableLiveData(BACK_CAMERA)
-    private val room by lazy { intent.getParcelableExtra<RowRoom.RoomItem>("room") }
-    private val toMember by lazy { intent.getStringExtra("to") }
+    private var fromPager = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_photos)
+    companion object {
+        fun instance(room: RowRoom.RoomItem?, toMember: String?, intentType: String) : CameraFragment {
+            val fragment = CameraFragment()
+            val bundle = bundleOf(
+                "room" to room,
+                "to_member" to toMember,
+                "intent_type" to intentType
+            )
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_camera, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        arguments?.apply {
+            room = getParcelable("room")
+            toMember = getString("to_member")
+            intentType = getString("intent_type")
+        }
+
+        val listPermission = listOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
+
+        requireActivity().withPermissions(listPermission) { _, deniedList ->
+            if (deniedList.isEmpty()) {
+                setupView()
+            }
+        }
+    }
+
+    fun isFromPager(fromPager: Boolean) {
+        this.fromPager = fromPager
+    }
+
+    private fun setupView() {
         camera_view.setLifecycleOwner(this)
 
         bg_view.alpha = 0f
@@ -66,12 +108,12 @@ class PhotosActivity : AppCompatActivity() {
         setupBottomSheet()
         lifecycleScope.launch {
             delay(1000)
-            runOnUiThread {
+            CoroutineScope(Dispatchers.Main).launch {
                 setupRecyclerViewPhotos()
             }
         }
 
-        val hasFlash = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
+        val hasFlash = requireContext().packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
         if (!hasFlash) btn_flash.alpha = 0.4f
         btn_flash.click {
             if (hasFlash) {
@@ -122,10 +164,10 @@ class PhotosActivity : AppCompatActivity() {
     private fun setupFlash() {
         if (camera_view.flash == Flash.OFF) {
             camera_view.flash = Flash.ON
-            btn_flash.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_flash_on_24))
+            btn_flash.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_flash_on_24))
         } else if (camera_view.flash == Flash.ON) {
             camera_view.flash = Flash.OFF
-            btn_flash.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_flash_off_24))
+            btn_flash.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_flash_off_24))
         }
     }
 
@@ -134,10 +176,22 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     private fun intentToResult(path: String) {
-        intentTo(ImageResultActivity::class.java) {
+
+        val intent = Intent(requireContext(), CameraResultActivity::class.java).apply {
             putExtra("image_path", path)
             putExtra("room", room)
             putExtra("to", toMember)
+            putExtra("intent_type", intentType)
+        }
+
+        startActivityForResult(intent) { success, data ->
+            if (success) {
+                if (!fromPager) {
+                    requireActivity().finish()
+                } else {
+                    Broadcast.with(GlobalScope).post("direct_main_chat")
+                }
+            }
         }
     }
 
@@ -149,7 +203,7 @@ class PhotosActivity : AppCompatActivity() {
                 tx_all_photos.alpha = slideOffset
                 rv_photo2.alpha = slideOffset
 
-                val reverseOffset = 1-slideOffset
+                val reverseOffset = 1 - slideOffset
                 rv_photo1.alpha = reverseOffset
 
                 if (slideOffset > 0) {
@@ -179,8 +233,8 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerViewPhotos() {
-        val linearLayout = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        val gridLayout = GridLayoutManager(this, 3)
+        val linearLayout = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        val gridLayout = GridLayoutManager(requireContext(), 3)
 
         photoAdapter1.setType(0)
         photoAdapter2.setType(1)
@@ -188,16 +242,27 @@ class PhotosActivity : AppCompatActivity() {
         rv_photo1.run {
             layoutManager = linearLayout
             adapter = photoAdapter1
+
+            photoAdapter1.onClick {
+                if (alpha == 1f) {
+                    intentToResult(it.uri)
+                }
+            }
         }
 
         rv_photo2.run {
             layoutManager = gridLayout
             adapter = photoAdapter2
+
+            photoAdapter2.onClick {
+                if (alpha == 1f) {
+                    intentToResult(it.uri)
+                }
+            }
         }
 
         photosViewModel.photos()
-
-        photosViewModel.data.observe(this, Observer {
+        photosViewModel.data.observe(viewLifecycleOwner, Observer {
             photoAdapter1.submitList(it)
             photoAdapter2.submitList(it)
         })

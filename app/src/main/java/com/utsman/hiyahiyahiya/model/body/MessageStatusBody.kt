@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.model.features
+package com.utsman.hiyahiyahiya.model.body
 
 import com.google.gson.annotations.SerializedName
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus

@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.viewmodel
+package com.utsman.hiyahiyahiya.data.repository
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +20,6 @@ class AuthRepository(context: Context) {
     var firebaseAuth: FirebaseAuth
 
     init {
-        logi("init gso ----------->")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(context.getString(R.string.default_web_client_id))
             .requestEmail()

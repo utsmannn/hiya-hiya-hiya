@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.perfomer.blitz.setTimeAgo
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.row.RowRoom
@@ -22,6 +23,7 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             img_profile.load(item.imageRoom, isCircle = true)
             tx_title.text = item.titleRoom
             tx_subtitle.text = item.subtitleRoom
+            tx_date.setTimeAgo(item.lastDate ?: 0L)
 
             when (item.localChatStatus) {
                 LocalChatStatus.NONE -> img_send_indicator.visibility = View.GONE
@@ -47,7 +49,7 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class ContactDiffCallback(
+    inner class RoomDiffCallback(
         private val oldList: List<RowRoom>,
         private val newList: List<RowRoom>
     ) : DiffUtil.Callback() {
@@ -72,7 +74,7 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun addChat(chats: List<RowRoom>) = apply {
-        val diffCallback = ContactDiffCallback(roomList, chats)
+        val diffCallback = RoomDiffCallback(roomList, chats)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         roomList.clear()
         roomList.addAll(chats)

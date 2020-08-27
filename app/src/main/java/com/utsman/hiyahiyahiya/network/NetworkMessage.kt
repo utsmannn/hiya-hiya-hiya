@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.utsman.hiyahiyahiya.data.ConstantValue
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
-import com.utsman.hiyahiyahiya.model.features.MessageBody
+import com.utsman.hiyahiyahiya.model.body.MessageBody
 import com.utsman.hiyahiyahiya.model.types.TypeMessage
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.CoroutineScope
@@ -22,12 +22,14 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
         CoroutineScope(Dispatchers.IO).launch {
             val targetUser = localUserDb.localUserDao().localUser(messageBody.toMessage ?: "")
 
+            val toDestination = when (messageBody.typeMessage) {
+                TypeMessage.DEVICE_REGISTER -> "/topics/${ConstantValue.topicRegister}"
+                TypeMessage.STORY -> "/topics/${ConstantValue.topicStory}"
+                else -> targetUser?.token
+            }
+
             val rawBody = RawBody(
-                to = if (messageBody.typeMessage == TypeMessage.DEVICE_REGISTER) {
-                    "/topics/${ConstantValue.topic}"
-                } else {
-                    targetUser?.token
-                },
+                to = toDestination,
                 data = messageBody
             )
 
@@ -38,12 +40,12 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
 
             try {
                 val response = networkInstanceMessages.sendMessage(rawBody)
+                logi("Responses in -> $response")
                 activity.runOnUiThread {
-                    if (response.success == 1) {
-                        messageCallback.onSuccess()
-                    }
                     if (response.failure == 1) {
                         messageCallback.onFailed(null)
+                    } else {
+                        messageCallback.onSuccess()
                     }
                 }
             } catch (e: Throwable) {
@@ -60,7 +62,7 @@ class NetworkMessage(componentCallbacks: ComponentCallbacks) {
 
             val rawBody = RawBody(
                 to = if (messageBody.typeMessage == TypeMessage.DEVICE_REGISTER) {
-                    "/topics/${ConstantValue.topic}"
+                    "/topics/${ConstantValue.topicRegister}"
                 } else {
                     targetUser?.token
                 },
