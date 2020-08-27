@@ -3,10 +3,7 @@ package com.utsman.hiyahiyahiya.model.utils
 import com.utsman.hiyahiyahiya.database.entity.LocalImageBB
 import com.utsman.hiyahiyahiya.database.entity.LocalStory
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
-import com.utsman.hiyahiyahiya.model.body.MessageBody
-import com.utsman.hiyahiyahiya.model.body.MessageStatusBody
-import com.utsman.hiyahiyahiya.model.body.StoryBody
-import com.utsman.hiyahiyahiya.model.body.TypingBody
+import com.utsman.hiyahiyahiya.model.body.*
 import com.utsman.hiyahiyahiya.model.features.*
 import com.utsman.hiyahiyahiya.model.row.RowChatItem
 import com.utsman.hiyahiyahiya.model.row.RowRoom
@@ -16,6 +13,7 @@ fun messageBody(body: MessageBody.() -> Unit) = MessageBody().apply(body)
 fun messageStatusBody(body: MessageStatusBody.() -> Unit) = MessageStatusBody().apply(body)
 fun typingBody(body: TypingBody.() -> Unit) = TypingBody().apply(body)
 fun storyBody(body: StoryBody.() -> Unit) = StoryBody().apply(body)
+fun readBody(body: ReadBody.() -> Unit) = ReadBody().apply(body)
 
 fun localUser(u: LocalUser.() -> Unit) = LocalUser().apply(u)
 fun localStory(story: LocalStory.() -> Unit) = LocalStory().apply(story)

@@ -1,5 +1,7 @@
 package com.utsman.hiyahiyahiya.ui.adapter
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +23,7 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class ItemRoomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: RowRoom.RoomItem) = itemView.run {
             img_profile.load(item.imageRoom, isCircle = true)
-            tx_title.text = item.titleRoom
+            tx_title.text = item.titleRoom + " " + item.localChatStatus.name
             tx_subtitle.text = item.subtitleRoom
             tx_date.setTimeAgo(item.lastDate ?: 0L)
 
@@ -30,10 +32,17 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 LocalChatStatus.SEND -> {
                     img_send_indicator.visibility = View.VISIBLE
                     img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_done_24))
+                    img_send_indicator.setColorFilter(ContextCompat.getColor(context, android.R.color.black), PorterDuff.Mode.MULTIPLY)
                 }
                 LocalChatStatus.RECEIVED -> {
                     img_send_indicator.visibility = View.VISIBLE
                     img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
+                    img_send_indicator.setColorFilter(ContextCompat.getColor(context, android.R.color.black), PorterDuff.Mode.MULTIPLY)
+                }
+                LocalChatStatus.READ -> {
+                    img_send_indicator.visibility = View.VISIBLE
+                    img_send_indicator.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_all_24))
+                    img_send_indicator.setColorFilter(ContextCompat.getColor(context, R.color.colorAccent), PorterDuff.Mode.MULTIPLY)
                 }
             }
 

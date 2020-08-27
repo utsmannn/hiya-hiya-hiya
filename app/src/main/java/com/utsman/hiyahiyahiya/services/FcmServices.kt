@@ -12,6 +12,7 @@ import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.model.types.TypeMessage
 import com.utsman.hiyahiyahiya.model.body.MessageStatusBody
+import com.utsman.hiyahiyahiya.model.body.ReadBody
 import com.utsman.hiyahiyahiya.model.body.StoryBody
 import com.utsman.hiyahiyahiya.model.body.TypingBody
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
@@ -33,6 +34,39 @@ class FcmServices : FirebaseMessagingService() {
     private val localImageBBDatabase: LocalImageBBDatabase by inject()
 
     private val network: NetworkMessage by network()
+
+    override fun onCreate() {
+        super.onCreate()
+        registerBroadcast()
+    }
+
+    private fun registerBroadcast() {
+        Broadcast.with(GlobalScope).observer { key, data ->
+            when (key) {
+                "read_item" -> {
+                    val itemRead = data as MessageStatusBody
+                    val messageBody = messageBody {
+                        this.toMessage = itemRead.ownerId
+                        this.fromMessage = UserPref.getUserId()
+                        this.typeMessage = TypeMessage.LOCAL_STATUS
+                        this.payload = itemRead
+                    }
+
+                    if (itemRead.ownerId != UserPref.getUserId()) {
+                        logi("send read status------")
+                        network.send(messageBody, object : NetworkMessage.MessageCallback {
+                            override fun onSuccess() {
+                            }
+
+                            override fun onFailed(message: String?) {
+                            }
+
+                        })
+                    }
+                }
+            }
+        }
+    }
 
     override fun onMessageReceived(remote: RemoteMessage) {
         super.onMessageReceived(remote)
@@ -118,11 +152,17 @@ class FcmServices : FirebaseMessagingService() {
             TypeMessage.LOCAL_STATUS -> {
                 val payloadStatus = gson.fromJson(payloadString, MessageStatusBody::class.java)
                 val chatFound = localChatDb.localChatDao().localChat(payloadStatus.chatId)
+
                 if (chatFound != null) {
+                    val validate = payloadStatus.localStatus != LocalChatStatus.READ && chatFound.from != payloadStatus.ownerId
+                    val isMe = payloadStatus.ownerId == UserPref.getUserId()
+                    logi("Validate is --> $validate")
+                    logi("local status -> ${payloadStatus.localStatus}")
+                    logi("chat from me -> $isMe -- id is -> ${payloadStatus.ownerId}")
+
                     chatFound.localChatStatus = payloadStatus.localStatus
                     GlobalScope.launch {
                         localChatDb.localChatDao().update(chatFound)
-
                         val roomFound = localRoomDb.localRoomDao().localRoom(chatFound.roomId)
                         if (roomFound != null) {
                             roomFound.localChatStatus = payloadStatus.localStatus

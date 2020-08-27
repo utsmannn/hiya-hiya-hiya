@@ -113,8 +113,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         Broadcast.with(GlobalScope).observer { key, _ ->
-            if (key == "direct_main_chat") {
-                runOnUiThread {
+            when (key) {
+                "direct_main_chat" -> runOnUiThread {
                     vp_chat.currentItem = 1
                 }
             }

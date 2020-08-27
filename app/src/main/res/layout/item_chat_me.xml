@@ -42,7 +42,7 @@
             android:paddingRight="6dp">
 
             <TextView
-                android:id="@+id/tx_status_me"
+                android:id="@+id/tx_date_me"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.6"
@@ -57,7 +57,6 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="6dp"
-                android:layout_marginLeft="6dp"
                 android:src="@drawable/ic_baseline_done_all_24" />
 
         </LinearLayout>

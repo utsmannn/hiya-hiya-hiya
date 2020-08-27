@@ -28,7 +28,7 @@
             tools:text="@string/lorem_ipsum" />
 
         <TextView
-            android:id="@+id/tx_status_other"
+            android:id="@+id/tx_date_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"

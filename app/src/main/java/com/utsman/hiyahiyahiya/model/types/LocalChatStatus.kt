@@ -1,5 +1,5 @@
 package com.utsman.hiyahiyahiya.model.types
 
 enum class LocalChatStatus {
-    SEND, RECEIVED, NONE
+    SEND, RECEIVED, READ, NONE
 }
