@@ -9,10 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.UserPref
-import com.utsman.hiyahiyahiya.di.network
 import com.utsman.hiyahiyahiya.model.row.RowRoom
-import com.utsman.hiyahiyahiya.network.NetworkMessage
-import com.utsman.hiyahiyahiya.ui.ChatRoomActivity
+import com.utsman.hiyahiyahiya.ui.activity.ChatRoomActivity
 import com.utsman.hiyahiyahiya.ui.adapter.RoomAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.RoomViewModel
 import com.utsman.hiyahiyahiya.utils.intentTo

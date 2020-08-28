@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.ui
+package com.utsman.hiyahiyahiya.ui.activity
 
 import android.os.Bundle
 import android.view.View
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.data.ConstantValue
+import com.utsman.hiyahiyahiya.data.UnreadPref
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.LocalUserDatabase
 import com.utsman.hiyahiyahiya.di.network
@@ -33,7 +34,6 @@ import com.utsman.hiyahiyahiya.utils.url_utils.UrlUtil
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.activity_chat_room.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -64,7 +64,16 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
         setupToolbar(room)
 
         if (room != null) {
+            updateUnreadCount()
+            disableNotificationInRoom()
             setupView(room, to)
+        }
+    }
+
+    private fun updateUnreadCount() {
+        UnreadPref.clearUnreadCount(room!!.id)
+        GlobalScope.launch {
+            roomViewModel.update(room!!.toLocalRoom())
         }
     }
 
@@ -91,6 +100,14 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                 }
                 .start()
         }
+    }
+
+    private fun disableNotificationInRoom() {
+        Broadcast.with(GlobalScope).post("disable_notification", room)
+    }
+
+    private fun enableNotificationInRoom() {
+        Broadcast.with(GlobalScope).post("enable_notification")
     }
 
     private fun registerBroadcast(roomItem: RowRoom.RoomItem?) {
@@ -122,8 +139,7 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
             if (it.isNullOrEmpty()) {
                 chatAdapter.addChat(listOf(RowChatItem.Empty("chat is empty")))
             } else {
-                val newList = DividerCalculator.calculateDividerList(it)
-                logi("uhuuuuyyy -> ${newList.first().rowChatType.name} --> is divider ${newList.first().divider}")
+                val newList = DividerCalculator.calculateDividerChat(it)
                 chatSize = newList.size
                 chatAdapter.addChat(newList)
                 rv_chat.scrollToPosition(newList.lastIndex)
@@ -185,7 +201,7 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                     }
                 }
                 "location" -> {
-
+                    // sharing location activity
                 }
 
             }
@@ -380,11 +396,9 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
 
     private fun setupRecyclerViewScrollListener() {
         rv_chat.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 isReachBottom = !rv_chat.canScrollVertically(1)
-
             }
         })
     }
@@ -397,5 +411,10 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
         if (chatSize > 1) {
             if (isReachBottom) rv_chat.scrollToPosition(chatSize - 1)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        enableNotificationInRoom()
     }
 }

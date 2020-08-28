@@ -35,7 +35,7 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="2020" />
 
-        <activity android:name=".ui.AuthActivity">
+        <activity android:name=".ui.activity.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,20 +43,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.ContactsActivity"
+            android:name=".ui.activity.ContactsActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.ChatRoomActivity"
+            android:name=".ui.activity.ChatRoomActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.CameraActivity"
+            android:name=".ui.activity.CameraActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.CameraResultActivity" />
+        <activity android:name=".ui.activity.CameraResultActivity" />
         <activity android:name=".utils.story_view.StoryPlayerActivity" />
-        <activity android:name=".ui.GalleryActivity" />
+        <activity android:name=".ui.activity.GalleryActivity" />
     </application>
 
 </manifest>

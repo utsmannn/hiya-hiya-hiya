@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocalRoomDao {
-    @Query("select * from local_room order by lastDate")
+    @Query("select * from local_room order by lastDate desc")
     fun localRooms(): Flow<MutableList<LocalRoom>>
 
     @Query("select * from local_room where id = :id")

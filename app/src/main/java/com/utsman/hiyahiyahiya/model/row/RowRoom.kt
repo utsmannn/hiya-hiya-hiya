@@ -22,7 +22,9 @@ sealed class RowRoom(val rowRoomType: RowRoomType) {
         @SerializedName("local_chat_status")
         var localChatStatus: LocalChatStatus = LocalChatStatus.NONE,
         @SerializedName("image_badge")
-        var imageBadge: Boolean = false
+        var imageBadge: Boolean = false,
+        @SerializedName("unread_count")
+        var unReadCount: Int = 0
     ) : Parcelable, RowRoom(RowRoomType.ITEM)
 
     data class Empty(

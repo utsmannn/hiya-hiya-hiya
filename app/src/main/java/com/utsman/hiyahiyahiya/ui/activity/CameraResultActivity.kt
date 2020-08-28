@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.ui
+package com.utsman.hiyahiyahiya.ui.activity
 
 import android.app.Activity
 import android.os.Bundle
@@ -25,7 +25,6 @@ import com.utsman.hiyahiyahiya.ui.viewmodel.StoryViewModel
 import com.utsman.hiyahiyahiya.utils.*
 import kotlinx.android.synthetic.main.activity_image_result.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

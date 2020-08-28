@@ -1,5 +1,6 @@
 package com.utsman.hiyahiyahiya.model.utils
 
+import com.utsman.hiyahiyahiya.data.UnreadPref
 import com.utsman.hiyahiyahiya.data.repository.ContactRepository
 import com.utsman.hiyahiyahiya.data.repository.StoryRepository
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
@@ -20,7 +21,11 @@ import kotlinx.coroutines.launch
 fun LocalUser.toContact() = RowContact.Contact(id, name, photoUri, about)
 fun RowContact.Contact.toLocalUser() = LocalUser(id, name, photoUrl, about)
 
-fun LocalRoom.toRowRoom() = RowRoom.RoomItem(id, chatsId, membersId, lastDate, titleRoom, subtitleRoom, imageRoom, localChatStatus, imageBadge)
+fun LocalRoom.toRowRoom(): RowRoom.RoomItem {
+    val unreadCount = UnreadPref.getUnreadCount(id)
+    return RowRoom.RoomItem(id, chatsId, membersId, lastDate, titleRoom, subtitleRoom, imageRoom, localChatStatus, imageBadge, unreadCount)
+}
+
 fun RowRoom.RoomItem.toLocalRoom() = LocalRoom(id, chatsId, membersId, lastDate, titleRoom, subtitleRoom, imageRoom, localChatStatus, imageBadge)
 
 fun LocalChat.toChat() = RowChatItem.ChatItem(id, message, to, from, time, roomId, imageAttachment, urlAttachment, currentUser, localChatStatus)

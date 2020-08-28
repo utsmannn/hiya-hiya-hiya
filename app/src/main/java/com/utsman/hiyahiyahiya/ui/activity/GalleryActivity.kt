@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.ui
+package com.utsman.hiyahiyahiya.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -31,7 +31,7 @@ class GalleryActivity : AppCompatActivity() {
         rv_gallery.apply {
             layoutManager = gridLayout
             adapter = photoAdapter.apply {
-                setType(30238)
+                setLayout(R.layout.item_photo_2)
                 onClick {
                     intentToResult(it.uri)
                 }

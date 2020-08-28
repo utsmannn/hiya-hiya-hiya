@@ -1,6 +1,5 @@
 package com.utsman.hiyahiyahiya.ui.fragment
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -22,7 +21,7 @@ import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.utsman.hiyahiyahiya.R
 import com.utsman.hiyahiyahiya.model.row.RowRoom
-import com.utsman.hiyahiyahiya.ui.CameraResultActivity
+import com.utsman.hiyahiyahiya.ui.activity.CameraResultActivity
 import com.utsman.hiyahiyahiya.ui.adapter.PhotosPagedAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.PhotosViewModel
 import com.utsman.hiyahiyahiya.utils.Broadcast
@@ -30,7 +29,6 @@ import com.utsman.hiyahiyahiya.utils.bottom_sheet.BottomSheetBehaviorRecyclerMan
 import com.utsman.hiyahiyahiya.utils.bottom_sheet.BottomSheetBehaviorRv
 import com.utsman.hiyahiyahiya.utils.click
 import com.utsman.hiyahiyahiya.utils.saveImage
-import com.utsman.hiyahiyahiya.utils.withPermissions
 import kotlinx.android.synthetic.main.fragment_camera.*
 import kotlinx.android.synthetic.main.bottom_sheet_photos.*
 import kotlinx.coroutines.*
@@ -224,8 +222,9 @@ class CameraFragment : Fragment() {
         val linearLayout = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         val gridLayout = GridLayoutManager(requireContext(), 3)
 
-        photoAdapter1.setType(0)
-        photoAdapter2.setType(1)
+        photoAdapter1.setLayout(R.layout.item_photo_1)
+        photoAdapter2.setLayout(R.layout.item_photo_2)
+        gridLayout.spanSizeLookup = photoAdapter2.fixGridSpan()
 
         rv_photo1.run {
             layoutManager = linearLayout
@@ -250,8 +249,13 @@ class CameraFragment : Fragment() {
         }
 
         photosViewModel.photos()
+        photosViewModel.photosWithDivider()
+
         photosViewModel.data.observe(viewLifecycleOwner, Observer {
             photoAdapter1.submitList(it)
+        })
+
+        photosViewModel.dataWithDivider.observe(viewLifecycleOwner, Observer {
             photoAdapter2.submitList(it)
         })
     }

@@ -26,8 +26,16 @@ class RoomAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             tx_subtitle.text = item.subtitleRoom
             tx_date.setTimeAgo(item.lastDate ?: 0L)
 
-            if (item.imageBadge) img_room_badge.visibility = View.VISIBLE
-            else img_room_badge.visibility = View.GONE
+            if (item.unReadCount == 0) tx_badge_unread.visibility = View.GONE
+            else tx_badge_unread.visibility = View.VISIBLE
+
+            tx_badge_unread.text = item.unReadCount.toString()
+
+            if (item.imageBadge) {
+                img_room_badge.visibility = View.VISIBLE
+            } else {
+                img_room_badge.visibility = View.GONE
+            }
 
             img_send_indicator.setColorFilter(ContextCompat.getColor(context, android.R.color.black), PorterDuff.Mode.MULTIPLY)
 

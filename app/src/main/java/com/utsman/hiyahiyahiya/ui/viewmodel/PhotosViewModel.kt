@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.take
 class PhotosViewModel(private val photosRepository: PhotosRepository) : ViewModel() {
 
     var data: LiveData<PagedList<PhotoLocal>> = MutableLiveData()
+    var dataWithDivider: LiveData<PagedList<PhotoLocal>> = MutableLiveData()
 
     private fun configPaged(): PagedList.Config = PagedList.Config.Builder()
         .setPageSize(20)
@@ -23,9 +24,16 @@ class PhotosViewModel(private val photosRepository: PhotosRepository) : ViewMode
         .build()
 
     fun photos() {
-        val factory = PhotosDataFactory(photosRepository)
+        val factory = PhotosDataFactory(photosRepository, false)
         val paged = LivePagedListBuilder(factory, configPaged())
             .build()
         data = paged
+    }
+
+    fun photosWithDivider() {
+        val factory = PhotosDataFactory(photosRepository, true)
+        val paged = LivePagedListBuilder(factory, configPaged())
+            .build()
+        dataWithDivider = paged
     }
 }

@@ -3,6 +3,7 @@ package com.utsman.hiyahiyahiya.data.gallery
 import androidx.paging.PageKeyedDataSource
 import com.utsman.hiyahiyahiya.data.repository.PhotosRepository
 import com.utsman.hiyahiyahiya.model.features.PhotoLocal
+import com.utsman.hiyahiyahiya.utils.DividerCalculator
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class PhotosDataSource(private val photosRepository: PhotosRepository) : PageKeyedDataSource<Int, PhotoLocal>() {
+class PhotosDataSource(private val photosRepository: PhotosRepository, private val enableDivider: Boolean) : PageKeyedDataSource<Int, PhotoLocal>() {
     private val perPage = 20
     private var page = 0
     private var currentList: MutableList<PhotoLocal> = mutableListOf()
@@ -20,7 +21,12 @@ class PhotosDataSource(private val photosRepository: PhotosRepository) : PageKey
             photosRepository.allImagesFlowReorder()?.collect {
                 currentList = it
                 val list = it.subList(page, perPage)
-                callback.onResult(list, null, page + perPage + 1)
+                if (enableDivider) {
+                    val newList = DividerCalculator.calculateDividerGallery(list)
+                    callback.onResult(newList, null, page + perPage + 1)
+                } else {
+                    callback.onResult(list, null, page + perPage + 1)
+                }
             }
         }
     }
@@ -32,7 +38,12 @@ class PhotosDataSource(private val photosRepository: PhotosRepository) : PageKey
             if (currentList.size > nextPage + perPage) {
                 val sizeLoad = nextPage + perPage
                 val list = currentList.subList(nextPage, sizeLoad)
-                callback.onResult(list, sizeLoad)
+                if (enableDivider) {
+                    val newList = DividerCalculator.calculateDividerGallery(list)
+                    callback.onResult(newList, sizeLoad)
+                } else {
+                    callback.onResult(list, sizeLoad)
+                }
             }
         }
     }

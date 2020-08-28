@@ -1,4 +1,4 @@
-package com.utsman.hiyahiyahiya.ui
+package com.utsman.hiyahiyahiya.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

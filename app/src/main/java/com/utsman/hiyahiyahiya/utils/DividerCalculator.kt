@@ -1,9 +1,12 @@
 package com.utsman.hiyahiyahiya.utils
 
 import android.annotation.SuppressLint
+import com.utsman.hiyahiyahiya.model.features.PhotoLocal
+import com.utsman.hiyahiyahiya.model.features.PhotoType
 import com.utsman.hiyahiyahiya.model.row.RowChatItem
 import com.utsman.hiyahiyahiya.model.row.RowChatType
 import com.utsman.hiyahiyahiya.model.utils.chatItem
+import com.utsman.hiyahiyahiya.model.utils.photo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +24,7 @@ object DividerCalculator {
         sdfDay.format(System.currentTimeMillis()).toInt()
     }
 
-    fun calculateDividerList(oldList: List<RowChatItem.ChatItem>): MutableList<RowChatItem.ChatItem> {
+    fun calculateDividerChat(oldList: List<RowChatItem.ChatItem>): MutableList<RowChatItem.ChatItem> {
         val newList: MutableList<RowChatItem.ChatItem> = mutableListOf()
         val iterator = oldList.iterator()
         var currentDay = 0
@@ -56,6 +59,44 @@ object DividerCalculator {
             }
 
             newList.add(item)
+        }
+        return newList
+    }
+
+    fun calculateDividerGallery(oldList: List<PhotoLocal>): MutableList<PhotoLocal> {
+        val newList: MutableList<PhotoLocal> = mutableListOf()
+        val iterator = oldList.iterator()
+        var currentDay = 0
+        for (item in iterator) {
+            logi(item.toString())
+            val newTime = item.date.toLong()*1000
+            val day = sdfDay.format(newTime).toInt()
+            if (day > currentDay) {
+                val newIdDivider = "divider-$day"
+                currentDay = day
+                val messageDivider = when (currentDay) {
+                    nowDay -> {
+                        "Hari ini"
+                    }
+                    nowDay - 1 -> {
+                        "Kemarin"
+                    }
+                    else -> {
+                        sdfDate.format(newTime)
+                    }
+                }
+
+                logi("divider here --> $messageDivider")
+                val photoDivider = photo {
+                    dividerString = messageDivider
+                }.apply {
+                    photoType = PhotoType.DIVIDER
+                }
+
+                newList.add(photoDivider)
+            }
+
+            newList.add(item.apply { photoType = PhotoType.ITEM })
         }
         return newList
     }

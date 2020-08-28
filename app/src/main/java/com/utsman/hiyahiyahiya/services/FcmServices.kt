@@ -1,19 +1,15 @@
 package com.utsman.hiyahiyahiya.services
 
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import com.utsman.hiyahiyahiya.R
+import com.utsman.hiyahiyahiya.data.UnreadPref
 import com.utsman.hiyahiyahiya.data.UserPref
 import com.utsman.hiyahiyahiya.database.*
 import com.utsman.hiyahiyahiya.database.entity.LocalChat
@@ -26,17 +22,13 @@ import com.utsman.hiyahiyahiya.model.body.MessageStatusBody
 import com.utsman.hiyahiyahiya.model.body.StoryBody
 import com.utsman.hiyahiyahiya.model.body.TypingBody
 import com.utsman.hiyahiyahiya.model.features.ImageAttachment
+import com.utsman.hiyahiyahiya.model.row.RowRoom
 import com.utsman.hiyahiyahiya.model.types.LocalChatStatus
 import com.utsman.hiyahiyahiya.model.utils.*
-import com.utsman.hiyahiyahiya.ui.ChatRoomActivity
-import com.utsman.hiyahiyahiya.utils.Broadcast
-import com.utsman.hiyahiyahiya.utils.generateIdImageBB
-import com.utsman.hiyahiyahiya.utils.generateIdStory
-import com.utsman.hiyahiyahiya.utils.logi
+import com.utsman.hiyahiyahiya.ui.activity.ChatRoomActivity
+import com.utsman.hiyahiyahiya.utils.*
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
-import java.lang.Exception
-import java.util.*
 
 class FcmServices : FirebaseMessagingService() {
     private val gson = Gson()
@@ -47,9 +39,9 @@ class FcmServices : FirebaseMessagingService() {
     private val localImageBBDatabase: LocalImageBBDatabase by inject()
 
     private val network: NetworkMessage by network()
-    private var notificationActive = true
 
     private lateinit var builder: NotificationCompat.Builder
+    private var otherName: String? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -57,6 +49,20 @@ class FcmServices : FirebaseMessagingService() {
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
+
+        Broadcast.with(GlobalScope).observer { key, data ->
+            when (key) {
+                "disable_notification" -> {
+                    val room = data as RowRoom.RoomItem?
+                    otherName = room?.titleRoom
+                    logi("yoiii -> ${room?.titleRoom} == othername => $otherName")
+                }
+                "enable_notification" -> {
+                    otherName = null
+                    logi(" ----------------------------------- notification enable")
+                }
+            }
+        }
     }
 
     override fun onMessageReceived(remote: RemoteMessage) {
@@ -82,7 +88,7 @@ class FcmServices : FirebaseMessagingService() {
                     val meId = UserPref.getUserId()
                     val otherId = payloadChat.from ?: ""
 
-                    val roomId = payloadChat.roomId ?: UUID.randomUUID().toString()
+                    val roomId = payloadChat.roomId ?: generateIdRoom(meId, otherId)
                     val roomFound = localRoomDb.localRoomDao().localRoom(roomId)
 
                     val imageAttach = payloadChat.imageAttachment
@@ -95,27 +101,33 @@ class FcmServices : FirebaseMessagingService() {
                         this.localChatStatus = LocalChatStatus.NONE
                         this.imageBadge = imageAttach.isNotEmpty()
                     } ?: chatRoom {
-                            this.id = roomId
-                            this.titleRoom = payloadChat.currentUser?.name
-                            this.subtitleRoom = payloadChat.message
-                            this.lastDate = payloadChat.time
-                            this.membersId = listOf(meId, otherId)
-                            this.chatsId = listOf(payloadChat.id)
-                            this.imageRoom = payloadChat.currentUser?.photoUri
-                            this.localChatStatus = LocalChatStatus.NONE
-                            this.imageBadge = imageAttach.isNotEmpty()
-                        }.toLocalRoom()
+                        this.id = roomId
+                        this.titleRoom = payloadChat.currentUser?.name
+                        this.subtitleRoom = payloadChat.message
+                        this.lastDate = payloadChat.time
+                        this.membersId = listOf(meId, otherId)
+                        this.chatsId = listOf(payloadChat.id)
+                        this.imageRoom = payloadChat.currentUser?.photoUri
+                        this.localChatStatus = LocalChatStatus.NONE
+                        this.imageBadge = imageAttach.isNotEmpty()
+                    }.toLocalRoom()
 
                     delay(300)
                     localRoomDb.localRoomDao().insert(room)
+                    sendCallbackStatus(payloadChat, otherId)
 
-                    showNotification(payloadChat, room, imageAttach) { b ->
-                        val notificationId = System.currentTimeMillis().toString().takeLast(4).toInt()
-                        with(NotificationManagerCompat.from(this@FcmServices)) {
-                            notify(notificationId, b.build())
+                    if (otherName != payloadChat.currentUser?.name) {
+                        var sizeUnreadChat = UnreadPref.getUnreadCount(room.id)
+                        sizeUnreadChat += 1
+                        UnreadPref.saveCount(room.id, sizeUnreadChat)
+
+                        showNotification(payloadChat, room, imageAttach) { b ->
+                            val notificationId = System.currentTimeMillis().toString().takeLast(4).toInt()
+                            with(NotificationManagerCompat.from(this@FcmServices)) {
+                                notify(notificationId, b.build())
+                            }
                         }
                     }
-                    sendCallbackStatus(payloadChat, otherId)
                 }
             }
             TypeMessage.LOCAL_STATUS -> {
@@ -187,7 +199,7 @@ class FcmServices : FirebaseMessagingService() {
             putExtra("to", payloadChat?.to)
         }
 
-        val pendingIntent =  TaskStackBuilder.create(this).run {
+        val pendingIntent = TaskStackBuilder.create(this).run {
             addNextIntent(intent)
             getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT)
         }
