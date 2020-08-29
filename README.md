@@ -58,6 +58,7 @@ and many more..
 - Java HTML Parser ([docs](https://jsoup.org/))
 - CameraView ([docs](https://github.com/natario1/CameraView))
 - Blitz ([docs](https://github.com/Perfomer/blitz))
+- ImgBB api ([docs](https://api.imgbb.com/))
 
 ---
 |![](https://i.ibb.co/9twKbBC/typing-2.png)|![](https://i.ibb.co/86vwdnS/Screenshot-2020-08-28-at-10.png)|![](https://i.ibb.co/XyLV27b/Screenshot-2020-08-28-at-10-1.png)|
