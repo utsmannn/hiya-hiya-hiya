@@ -12,7 +12,7 @@
   <a href="https://firebase.google.com/docs/cloud-messaging"><img alt="Fcm docs" src="https://img.shields.io/badge/Firebase-FCM-orange?logo=firebase&style=flat"></a>
   <a href="https://twitter.com/utsmannn"><img alt="Twitter" src="https://img.shields.io/twitter/follow/utsmannn"></a>
   <a href="https://github.com/utsmannn"><img alt="Github" src="https://img.shields.io/github/followers/utsmannn?label=follow&style=social"></a>
-  <h3 align="center">Whatsapp Clone - base on Firebase Cloud Messaging </h3>
+  <h3 align="center">Chat Apps - base on Firebase Cloud Messaging</h3>
 </p>
 
 ---
