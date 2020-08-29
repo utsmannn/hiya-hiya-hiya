@@ -65,14 +65,12 @@ object DividerCalculator {
 
     fun calculateDividerGallery(oldList: List<PhotoLocal>): MutableList<PhotoLocal> {
         val newList: MutableList<PhotoLocal> = mutableListOf()
-        val iterator = oldList.iterator()
         var currentDay = 0
-        for (item in iterator) {
+        for (item in oldList.iterator()) {
             logi(item.toString())
             val newTime = item.date.toLong()*1000
             val day = sdfDay.format(newTime).toInt()
             if (day > currentDay) {
-                val newIdDivider = "divider-$day"
                 currentDay = day
                 val messageDivider = when (currentDay) {
                     nowDay -> {

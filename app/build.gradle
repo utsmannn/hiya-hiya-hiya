@@ -82,9 +82,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
-    //implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.2'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
+
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     implementation 'androidx.room:room-runtime:2.2.5'
     implementation 'androidx.room:room-ktx:2.2.5'

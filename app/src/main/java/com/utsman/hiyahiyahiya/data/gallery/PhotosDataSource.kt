@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PhotosDataSource(private val photosRepository: PhotosRepository, private val enableDivider: Boolean) : PageKeyedDataSource<Int, PhotoLocal>() {
-    private val perPage = 20
+    private val perPage = 100
     private var page = 0
     private var currentList: MutableList<PhotoLocal> = mutableListOf()
 

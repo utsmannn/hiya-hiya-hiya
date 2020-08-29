@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name=".HiyaHiyaHiyaApplication"
@@ -54,9 +55,11 @@
         <activity
             android:name=".ui.activity.CameraActivity"
             android:windowSoftInputMode="adjustResize" />
+
         <activity android:name=".ui.activity.CameraResultActivity" />
         <activity android:name=".utils.story_view.StoryPlayerActivity" />
         <activity android:name=".ui.activity.GalleryActivity" />
+        <activity android:name=".ui.activity.SharedLocationActivity" />
     </application>
 
 </manifest>

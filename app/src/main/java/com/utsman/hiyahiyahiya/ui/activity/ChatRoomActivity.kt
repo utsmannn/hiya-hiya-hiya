@@ -1,5 +1,6 @@
 package com.utsman.hiyahiyahiya.ui.activity
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -201,7 +202,15 @@ class ChatRoomActivity : AppCompatActivity(), KeyboardVisibilityListener {
                     }
                 }
                 "location" -> {
-                    // sharing location activity
+                    val permissionLocation = Manifest.permission.ACCESS_FINE_LOCATION
+                    withPermissions(listOf(permissionLocation)) { grantedList, deniedList ->
+                        if (deniedList.isEmpty()) {
+                            intentTo(SharedLocationActivity::class.java) {
+                                putExtra("room", roomItem)
+                                putExtra("to", to)
+                            }
+                        }
+                    }
                 }
 
             }

@@ -31,6 +31,7 @@ class PhotosViewModel(private val photosRepository: PhotosRepository) : ViewMode
     }
 
     fun photosWithDivider() {
+        logi("hahhh")
         val factory = PhotosDataFactory(photosRepository, true)
         val paged = LivePagedListBuilder(factory, configPaged())
             .build()

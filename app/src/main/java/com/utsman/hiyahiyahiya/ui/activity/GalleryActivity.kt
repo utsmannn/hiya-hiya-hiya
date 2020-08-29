@@ -11,6 +11,8 @@ import com.utsman.hiyahiyahiya.model.row.RowRoom
 import com.utsman.hiyahiyahiya.model.types.TypeCamera
 import com.utsman.hiyahiyahiya.ui.adapter.PhotosPagedAdapter
 import com.utsman.hiyahiyahiya.ui.viewmodel.PhotosViewModel
+import com.utsman.hiyahiyahiya.utils.logi
+import com.utsman.hiyahiyahiya.utils.toast
 import kotlinx.android.synthetic.main.activity_gallery.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -28,18 +30,22 @@ class GalleryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_gallery)
 
         val gridLayout = GridLayoutManager(this, 3)
-        rv_gallery.apply {
-            layoutManager = gridLayout
-            adapter = photoAdapter.apply {
-                setLayout(R.layout.item_photo_2)
-                onClick {
-                    intentToResult(it.uri)
-                }
+        gridLayout.spanSizeLookup = photoAdapter.fixGridSpan()
+
+        photoAdapter.apply {
+            setLayout(R.layout.item_photo_2)
+            onClick {
+                intentToResult(it.uri)
             }
         }
 
-        photoViewModel.photos()
-        photoViewModel.data.observe(this, Observer {
+        rv_gallery.run {
+            layoutManager = gridLayout
+            adapter = photoAdapter
+        }
+
+        photoViewModel.photosWithDivider()
+        photoViewModel.dataWithDivider.observe(this, Observer {
             photoAdapter.submitList(it)
         })
     }

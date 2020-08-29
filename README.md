@@ -29,7 +29,7 @@
 - [x] Emoji keyboard (thanks to [Niklas Baudy](https://github.com/vanniktech/Emoji))
 - [x] Unread count
 - [x] Simple story
-- [x] Profile page
+- [ ] Profile page
 - [ ] Search chat and message
 - [ ] Group message
 - [ ] Message reversed paging
