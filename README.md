@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/utsmannn/hiya-hiya-hiya"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green"></a>
   <a href="https://github.com/utsmannn/hiya-hiya-hiya/pulls"><img alt="Pull request" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"></a>
   <a href="https://firebase.google.com/docs/cloud-messaging"><img alt="Fcm docs" src="https://img.shields.io/badge/Firebase-FCM-orange?logo=firebase&style=flat"></a>
   <a href="https://twitter.com/utsmannn"><img alt="Twitter" src="https://img.shields.io/twitter/follow/utsmannn"></a>
