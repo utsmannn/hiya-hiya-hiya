@@ -17,6 +17,7 @@ import com.utsman.hiyahiyahiya.model.utils.messageBody
 import com.utsman.hiyahiyahiya.network.NetworkMessage
 import com.utsman.hiyahiyahiya.ui.adapter.ChatPagerAdapter
 import com.utsman.hiyahiyahiya.ui.fragment.CameraFragment
+import com.utsman.hiyahiyahiya.ui.fragment.ContactFragment
 import com.utsman.hiyahiyahiya.ui.fragment.RoomsFragment
 import com.utsman.hiyahiyahiya.ui.fragment.StoriesFragment
 import com.utsman.hiyahiyahiya.ui.viewmodel.AuthViewModel
@@ -37,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        registerNotification()
 
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener { task ->
@@ -49,14 +49,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        btn_contacts.click(MainScope()) {
-            if (vp_chat.currentItem == 1) {
-                intentTo(ContactsActivity::class.java)
-            } else {
-                intentTo(CameraActivity::class.java) {
-                    putExtra("intent_type", TypeCamera.STORY.name)
-                }
-            }
+        btn_contacts.click {
+            vp_chat.currentItem = 1
         }
 
         startPermission {
@@ -76,15 +70,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFragment() {
         val pagerAdapter = ChatPagerAdapter(supportFragmentManager)
-        val cameraFragment = CameraFragment.instance(null, null, TypeCamera.STORY.name)
         val chatFragment = RoomsFragment()
-        val storiesFloat = StoriesFragment()
-        pagerAdapter.addFragment(cameraFragment, chatFragment, storiesFloat)
-        pagerAdapter.addTitles("Camera", "Chat", "Story")
-        cameraFragment.isFromPager(true)
+        val contactFragment = ContactFragment()
+        pagerAdapter.addFragment(chatFragment, contactFragment)
+        pagerAdapter.addTitles("Chat", "Contact")
 
         vp_chat.adapter = pagerAdapter
-        vp_chat.currentItem = 1
         tab_bar.setupWithViewPager(vp_chat)
 
         vp_chat.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -98,17 +89,16 @@ class MainActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        btn_contacts.visibility = View.GONE
-                        app_bar.setExpanded(false)
+                        btn_contacts.animate()
+                            .translationY(1f)
+                            .alpha(1f)
+                            .start()
                     }
                     1 -> {
-                        app_bar.setExpanded(true)
-                        btn_contacts.visibility = View.VISIBLE
-                        btn_contacts.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_round_chat_24))
-                    }
-                    2 -> {
-                        btn_contacts.visibility = View.VISIBLE
-                        btn_contacts.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_round_photo_camera_24))
+                        btn_contacts.animate()
+                            .translationY(1000f)
+                            .alpha(0f)
+                            .start()
                     }
                 }
             }
@@ -117,14 +107,10 @@ class MainActivity : AppCompatActivity() {
         Broadcast.with(GlobalScope).observer { key, _ ->
             when (key) {
                 "direct_main_chat" -> runOnUiThread {
-                    vp_chat.currentItem = 1
+                    vp_chat.currentItem = 0
                 }
             }
         }
-    }
-
-    private fun registerNotification() {
-
     }
 
     private fun registerTokenToAnotherDevice(tokenResult: String?) {
