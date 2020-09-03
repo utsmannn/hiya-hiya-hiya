@@ -5,6 +5,9 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 //apply plugin: 'com.getkeepsafe.dexcount'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.0"
@@ -18,6 +21,10 @@ android {
 
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "maps_api_key", properties.getProperty("api.maps")
+        buildConfigField "String", "FCM_API_KEY", properties.getProperty("api.server")
+        buildConfigField "String", "IMGBB_API_KEY", properties.getProperty("api.imgbb")
     }
 
     buildTypes {

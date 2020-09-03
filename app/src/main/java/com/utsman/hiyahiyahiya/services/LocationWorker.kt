@@ -5,6 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.utsman.hiyahiyahiya.data.DatePref
 import com.utsman.hiyahiyahiya.data.shared_location.SharedLocationManager
 import com.utsman.hiyahiyahiya.utils.logi
 import kotlinx.coroutines.coroutineScope
@@ -16,21 +17,22 @@ class LocationWorker(private val context: Context, param: WorkerParameters) : Co
         val locationManager = SharedLocationManager(context)
 
         val duration = inputData.getLong("duration", 0)
-        logi("duration is -> $duration")
+        val id = inputData.getString("id")
+
         var outputData: Data = workDataOf("location" to "empty")
+        logi("duration is -> $duration")
+        for (i in 1..Int.MAX_VALUE) {
+            val isTimeValidate = DatePref.isBefore(id, duration)
 
-        delay(1000)
-        for (i in 1..(duration*2)) {
             delay(500)
-
-            logi("getting location .... position duration -> $i")
+            logi("getting location .... duration enable -> $isTimeValidate")
             val location = locationManager.getLocation()
             val locationString = "${location?.latitude}, ${location?.longitude}"
             logi("location is -> $locationString")
             outputData = workDataOf("location" to locationString)
             setProgress(outputData)
 
-            if (i >= (duration*2)) return@coroutineScope Result.success(outputData)
+            if (!isTimeValidate) return@coroutineScope Result.success(outputData)
         }
 
         Result.success(outputData)

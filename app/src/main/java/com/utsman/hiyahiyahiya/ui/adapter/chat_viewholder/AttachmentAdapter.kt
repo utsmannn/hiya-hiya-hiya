@@ -1,7 +1,5 @@
 package com.utsman.hiyahiyahiya.ui.adapter.chat_viewholder
 
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +16,11 @@ class AttachmentAdapter : RecyclerView.Adapter<AttachmentAdapter.AttachmentViewH
 
     inner class AttachmentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(rowAttachChat: RowAttachChat) = itemView.run {
-            Picasso.get().load(rowAttachChat.bgResource).transform(CropCircleTransformation()).into(img_bg_attach)
+            /*Picasso.get().load(rowAttachChat.bgResource).transform(CropCircleTransformation()).into(img_bg_attach)
             Picasso.get().load(R.drawable.bg_tint_drawable).transform(CropCircleTransformation()).into(img_bg_tint_attach)
-            img_icon_attach.setImageDrawable(ContextCompat.getDrawable(context, rowAttachChat.iconResource))
+
+            img_icon_attach.setImageDrawable(ContextCompat.getDrawable(context, rowAttachChat.iconResource))*/
+
             tx_attach_title.text = rowAttachChat.title
             click {
                 onAttachClick?.invoke(rowAttachChat)

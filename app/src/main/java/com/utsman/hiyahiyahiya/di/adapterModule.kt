@@ -11,4 +11,5 @@ val adapterModule = module {
     factory { PhotosPagedAdapter() }
     factory { StoryAdapter() }
     factory { AttachmentAdapter() }
+    single { SharedLocationAdapter() }
 }

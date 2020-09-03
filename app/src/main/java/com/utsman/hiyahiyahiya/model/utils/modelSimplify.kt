@@ -5,10 +5,7 @@ import com.utsman.hiyahiyahiya.database.entity.LocalStory
 import com.utsman.hiyahiyahiya.database.entity.LocalUser
 import com.utsman.hiyahiyahiya.model.body.*
 import com.utsman.hiyahiyahiya.model.features.*
-import com.utsman.hiyahiyahiya.model.row.RowAttachChat
-import com.utsman.hiyahiyahiya.model.row.RowChatItem
-import com.utsman.hiyahiyahiya.model.row.RowRoom
-import com.utsman.hiyahiyahiya.model.row.RowStory
+import com.utsman.hiyahiyahiya.model.row.*
 
 fun messageBody(body: MessageBody.() -> Unit) = MessageBody().apply(body)
 fun messageStatusBody(body: MessageStatusBody.() -> Unit) = MessageStatusBody().apply(body)
@@ -28,3 +25,5 @@ fun story(story: RowStory.StoryItem.() -> Unit) = RowStory.StoryItem().apply(sto
 fun imageAttachment(attachment: ImageAttachment.() -> Unit) = ImageAttachment().apply(attachment)
 fun urlAttachment(attachment: UrlAttachment.() -> Unit) = UrlAttachment().apply(attachment)
 fun rowAttachment(rowAttachChat: RowAttachChat.() -> Unit) = RowAttachChat().apply(rowAttachChat)
+
+fun rowSharedLocation(rowSharedLocation: RowSharedLocation.() -> Unit) = RowSharedLocation().apply(rowSharedLocation)
